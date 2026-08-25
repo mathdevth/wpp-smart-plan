@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Plan - ระบบบริหารนโยบายและแผน</title>
+    <!-- CSS & Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --blue-grad: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --pink-grad: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            --bg-color: #f0f4f8;
+        }
+        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg-color); margin: 0; }
+        
+        /* 3D Elements */
+        .card-3d {
+            background: white;
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 6px 6px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease;
+        }
+        .card-3d:hover { transform: translateY(-5px); }
+        
+        .btn-3d-blue {
+            background: var(--blue-grad); color: white; border: none; border-radius: 12px;
+            box-shadow: 0 6px 0 #0093d5, 0 10px 15px rgba(0,0,0,0.2);
+            transition: all 0.1s; font-weight: bold;
+        }
+        .btn-3d-blue:active { box-shadow: 0 2px 0 #0093d5, 0 4px 6px rgba(0,0,0,0.2); transform: translateY(4px); }
+        
+        .btn-3d-pink {
+            background: var(--pink-grad); color: white; border: none; border-radius: 12px;
+            box-shadow: 0 6px 0 #d94b68, 0 10px 15px rgba(0,0,0,0.2);
+            transition: all 0.1s; font-weight: bold;
+        }
+        .btn-3d-pink:active { box-shadow: 0 2px 0 #d94b68, 0 4px 6px rgba(0,0,0,0.2); transform: translateY(4px); }
+
+        /* Layout */
+        .sidebar { height: 100vh; width: 260px; position: fixed; background: white; padding: 20px; box-shadow: 4px 0 15px rgba(0,0,0,0.05); z-index: 1000;}
+        .sidebar .nav-link { color: #555; font-weight: 500; padding: 12px 15px; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: var(--blue-grad); color: white; box-shadow: 0 4px 10px rgba(79, 172, 254, 0.4); }
+        .main-content { margin-left: 260px; padding: 30px; }
+
+        /* Login Screen */
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        
+        /* Alert Box */
+        .budget-alert { background: var(--pink-grad); color: white; border-radius: 15px; padding: 15px 20px; box-shadow: 0 8px 15px rgba(255, 117, 140, 0.3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        /* Print A4 */
+        .a4-print { display: none; background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: auto; }
+        @media print {
+            body * { visibility: hidden; }
+            .a4-print, .a4-print * { visibility: visible; }
+            .a4-print { display: block; position: absolute; left: 0; top: 0; padding: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= ระบบ Login ================= -->
+    <div id="loginScreen">
+        <div class="card-3d p-5 text-center" style="width: 400px;">
+            <h3 class="mb-4" style="background: var(--blue-grad); -webkit-background-clip: text; color: transparent; font-weight:bold;">
+                <i class="fas fa-school"></i> Smart Plan WPP
+            </h3>
+            <select class="form-select form-select-lg mb-4" id="roleSelect">
+                <option value="">-- เลือกสถานะเข้าใช้งาน --</option>
+                <option value="requester">👨‍🏫 ผู้ขอใช้งบ (ครูผู้สอน)</option>
+                <option value="owner">📋 เจ้าของโครงการ (หัวหน้างาน)</option>
+                <option value="plan">📊 งานนโยบายและแผน (ตรวจสอบ)</option>
+                <option value="director">👑 ผู้อำนวยการ (อนุมัติ)</option>
+            </select>
+            <button class="btn btn-3d-blue w-100 py-2" onclick="login()">เข้าสู่ระบบ</button>
+        </div>
+    </div>
+
+    <!-- ================= Sidebar ================= -->
+    <div class="sidebar no-print">
+        <h4 class="text-center mb-4 mt-2 fw-bold" style="color: #4facfe;">Smart Plan</h4>
+        <div class="text-center mb-4">
+            <span class="badge bg-secondary" id="userRoleBadge">Role</span>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#" onclick="showPage('dashboard')"><i class="fas fa-chart-pie me-2"></i> Dashboard & ปฏิทิน</a>
+            <a class="nav-link" href="#" onclick="showPage('form01')"><i class="fas fa-file-alt me-2"></i> จัดทำฟอร์ม ผง.01</a>
+            <a class="nav-link" href="#"><i class="fas fa-history me-2"></i> โครงการย้อนหลัง (รออัปเดต)</a>
+            <hr>
+            <small class="text-muted mb-2 px-3">เมนูอนาคต</small>
+            <a class="nav-link text-muted" href="#"><i class="fas fa-shopping-cart me-2"></i> ขอจัดซื้อ/จัดจ้าง</a>
+            <a class="nav-link text-muted" href="#"><i class="fas fa-car me-2"></i> ขอไปราชการ</a>
+            <button class="btn btn-sm btn-danger mt-4 w-100" onclick="logout()">ออกจากระบบ</button>
+        </nav>
+    </div>
+
+    <!-- ================= Main Content ================= -->
+    <div class="main-content no-print">
+        
+        <!-- Dashboard Page -->
+        <div id="page-dashboard">
+            <h2 class="mb-4">ภาพรวมนโยบายและแผน ปีงบประมาณ 2570</h2>
+            
+            <!-- แจ้งเตือนงบประมาณ -->
+            <div class="budget-alert mb-4">
+                <i class="fas fa-exclamation-triangle me-2"></i> 
+                <strong>แจ้งเตือน:</strong> กรุณาเบิกจ่ายงบประมาณไตรมาสที่ 2 ให้แล้วเสร็จภายใน 30 มีนาคม 2570 ตามแผนปฏิบัติการ!
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card-3d p-4 text-center">
+                        <h1 style="color: #4facfe;">15</h1>
+                        <p class="text-muted mb-0">โครงการทั้งหมด</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-3d p-4 text-center">
+                        <h1 style="color: #ff758c;">45%</h1>
+                        <p class="text-muted mb-0">อัตราการเบิกจ่ายงบ</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-3d p-4 text-center">
+                        <h1 class="text-success">5</h1>
+                        <p class="text-muted mb-0">รออนุมัติจัดซื้อ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="card-3d p-4">
+                <h5 class="mb-3"><i class="far fa-calendar-alt"></i> ปฏิทินปฏิบัติงาน</h5>
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        <!-- Form 01 Page -->
+        <div id="page-form01" style="display: none;">
+            <div class="card-3d p-4 mb-4">
+                <h4 class="mb-4">📝 ร่างโครงการ (ผง. 01)</h4>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label>ปีงบประมาณ</label>
+                        <select class="form-select" id="inpYear"><option value="2570">2570</option><option value="2569">2569</option></select>
+                    </div>
+                    <div class="col-md-9">
+                        <label>ชื่อโครงการ</label>
+                        <input type="text" class="form-control" id="inpName">
+                    </div>
+                    <div class="col-md-4">
+                        <label>ผู้รับผิดชอบ</label>
+                        <input type="text" class="form-control" id="inpManager">
+                    </div>
+                    <div class="col-md-4">
+                        <label>กลุ่มงาน</label>
+                        <input type="text" class="form-control" id="inpDept">
+                    </div>
+                    <div class="col-md-4">
+                        <label>งบประมาณ (บาท)</label>
+                        <input type="number" class="form-control" id="inpBudget">
+                    </div>
+                </div>
+                <div class="mt-4 d-flex justify-content-end gap-3">
+                    <button class="btn btn-3d-pink px-4" onclick="saveToCloud()"><i class="fas fa-cloud-upload-alt"></i> บันทึกขึ้น Cloud</button>
+                    <button class="btn btn-3d-blue px-4" onclick="preparePrint()"><i class="fas fa-print"></i> พิมพ์ ผง.01</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= ส่วนสำหรับพิมพ์ A4 (ซ่อนไว้) ================= -->
+    <div class="a4-print" id="printArea">
+        <div class="text-end fw-bold">ผง. 01</div>
+        <h5 class="text-center fw-bold mt-4">แบบเสนอโครงการตามแผนปฏิบัติการ ประจำปีงบประมาณ <span id="pYear"></span></h5>
+        <br>
+        <table style="width: 100%; line-height: 2;">
+            <tr><td style="width: 25%"><b>1. โครงการ</b></td><td id="pName" style="border-bottom: 1px dotted #000;"></td></tr>
+            <tr><td><b>2. ผู้รับผิดชอบ</b></td><td id="pManager" style="border-bottom: 1px dotted #000;"></td></tr>
+            <tr><td><b>&nbsp;&nbsp; กลุ่มงาน</b></td><td id="pDept" style="border-bottom: 1px dotted #000;"></td></tr>
+            <tr><td><b>3. งบประมาณ</b></td><td><span id="pBudget" style="border-bottom: 1px dotted #000;"></span> บาท</td></tr>
+        </table>
+        <br><br><br><br>
+        <table style="width: 100%; text-align: center; margin-top: 50px;">
+            <tr>
+                <td>ลงชื่อ................................................<br>(<span id="pSig">...................................</span>)<br>ผู้เสนอโครงการ</td>
+                <td>ลงชื่อ................................................<br>(นายอชิตพล บุณรัตน์)<br>หัวหน้างานนโยบายและแผนงาน</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- 🔴 นำ URL จาก Google Apps Script มาใส่ในเครื่องหมายคำพูดด้านล่างนี้ ---
+        const API_URL = "ใส่_URL_ที่ก๊อปปี้มาจาก_GAS_ตรงนี้"; 
+
+        // ระบบ Login จำลอง
+        function login() {
+            const role = document.getElementById('roleSelect').value;
+            if(!role) {
+                Swal.fire('ข้อผิดพลาด', 'กรุณาเลือกสถานะ', 'error');
+                return;
+            }
+            localStorage.setItem('userRole', role);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('userRoleBadge').innerText = document.getElementById('roleSelect').options[document.getElementById('roleSelect').selectedIndex].text;
+            initCalendar();
+        }
+
+        function logout() {
+            localStorage.removeItem('userRole');
+            location.reload();
+        }
+
+        // ตรวจสอบสถานะตอนเปิดเว็บ
+        window.onload = function() {
+            const role = localStorage.getItem('userRole');
+            if(role) {
+                document.getElementById('loginScreen').style.display = 'none';
+                let roleNames = { 'requester':'ผู้ขอใช้งบ', 'owner':'เจ้าของโครงการ', 'plan':'นโยบายและแผน', 'director':'ผู้อำนวยการ' };
+                document.getElementById('userRoleBadge').innerText = roleNames[role];
+                initCalendar();
+            }
+        }
+
+        // เปลี่ยนหน้าจอ
+        function showPage(pageId) {
+            document.getElementById('page-dashboard').style.display = 'none';
+            document.getElementById('page-form01').style.display = 'none';
+            
+            // ลบ active ออกจากเมนูทั้งหมด
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.getElementById('page-' + pageId).style.display = 'block';
+            if(pageId === 'dashboard') window.dispatchEvent(new Event('resize')); // แก้บักปฏิทินไม่โหลด
+        }
+
+        // โหลดปฏิทิน
+        function initCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            if(calendarEl.innerHTML !== "") return; // โหลดแล้วไม่ต้องซ้ำ
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'th',
+                height: 400,
+                events: [
+                    { title: 'ส่งแผนปฏิบัติการ', start: '2027-03-30', color: '#ff758c' },
+                    { title: 'ประชุมสภานักเรียน', start: '2027-05-20', color: '#4facfe' }
+                ]
+            });
+            calendar.render();
+        }
+
+        // บันทึกข้อมูลผ่าน API ไปยัง Google Sheets
+        function saveToCloud() {
+            if(API_URL === "https://script.google.com/macros/s/AKfycbxDugbtkWAjboT8UU_HinYsE-osH2BBLxxcnk2xVecdYtTGdoLt5dyNqzuZPKGSwDaFog/exec") {
+                Swal.fire('แจ้งเตือน', 'คุณยังไม่ได้เชื่อมต่อ Google Apps Script URL', 'warning');
+                return;
+            }
+
+            const data = {
+                action: "insert",
+                year: document.getElementById('inpYear').value,
+                name: document.getElementById('inpName').value,
+                type: "โครงการต่อเนื่อง", // ตัวอย่าง
+                manager: document.getElementById('inpManager').value,
+                department: document.getElementById('inpDept').value,
+                budget: document.getElementById('inpBudget').value
+            };
+
+            Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false });
+            Swal.showLoading();
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                Swal.fire('สำเร็จ!', result.message, 'success');
+            })
+            .catch(error => {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกได้', 'error');
+            });
+        }
+
+        // จัดเตรียมข้อมูลก่อนพิมพ์ A4
+        function preparePrint() {
+            document.getElementById('pYear').innerText = document.getElementById('inpYear').value;
+            document.getElementById('pName').innerText = document.getElementById('inpName').value;
+            document.getElementById('pManager').innerText = document.getElementById('inpManager').value;
+            document.getElementById('pSig').innerText = document.getElementById('inpManager').value || "...................................";
+            document.getElementById('pDept').innerText = document.getElementById('inpDept').value;
+            
+            let budget = document.getElementById('inpBudget').value;
+            document.getElementById('pBudget').innerText = budget ? Number(budget).toLocaleString('th-TH') : "...............";
+
+            window.print();
+        }
+    </script>
+</body>
+</html>
