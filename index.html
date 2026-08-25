@@ -73,9 +73,10 @@
     <div class="sidebar no-print">
         <h4 class="text-center mb-4 fw-bold" style="color: #4facfe;">✨ Smart Plan</h4>
         <nav class="nav flex-column">
-            <a class="nav-link active" href="#" onclick="showPage('dashboard')"><i class="fas fa-home me-2"></i> หน้าหลัก</a>
-            <a class="nav-link" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> รายการโครงการ</a>
-            <a class="nav-link" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
+            <!-- สังเกตการเพิ่ม ID เพื่อให้ระบบควบคุม active ได้ง่ายขึ้น -->
+            <a class="nav-link active" id="menu-dashboard" href="#" onclick="showPage('dashboard')"><i class="fas fa-home me-2"></i> หน้าหลัก</a>
+            <a class="nav-link" id="menu-list" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> รายการโครงการ</a>
+            <a class="nav-link" id="menu-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
         </nav>
     </div>
 
@@ -172,7 +173,6 @@
                         </div>
                     </div>
 
-                    <!-- Tab 2: มาตรฐาน/นโยบาย -->
                     <div class="tab-pane fade" id="tab2">
                         <div class="alert alert-info py-2"><i class="fas fa-info-circle"></i> ติ๊กเลือกมาตรฐานที่สอดคล้องกับโครงการได้หลายหัวข้อ</div>
                         <div class="row g-3">
@@ -184,7 +184,6 @@
                         </div>
                     </div>
 
-                    <!-- Tab 3: เป้าหมาย & ประเมิน -->
                     <div class="tab-pane fade" id="tab3">
                         <div class="row g-3">
                             <div class="col-md-12">
@@ -226,7 +225,6 @@
                         </div>
                     </div>
 
-                    <!-- Tab 4: แผนงาน -->
                     <div class="tab-pane fade" id="tab4">
                         <label class="form-label d-flex justify-content-between text-primary fs-5"><span>5. ปฏิทินการจัดกิจกรรม</span><button class="btn btn-sm btn-success" onclick="addCalRow()">+ เพิ่มกิจกรรม</button></label>
                         <table class="table table-bordered mb-4">
@@ -242,7 +240,6 @@
                         </table>
                     </div>
 
-                    <!-- Tab 5: งบประมาณ -->
                     <div class="tab-pane fade" id="tab5">
                         <div class="row g-3 mb-4">
                             <div class="col-md-12"><label class="form-label text-primary fs-5">6. แหล่งที่มาของงบประมาณ</label></div>
@@ -431,7 +428,7 @@
         }
 
         function addPDCARow() { 
-            let id = 'q-' + Date.now();
+            let id = 'q-' + Math.random().toString(36).substr(2, 9);
             let tr = `<tr><td><select class="form-select pdca-phase"><option value="ขั้นวางแผน (Plan)">Plan</option><option value="ขั้นดำเนินการ (Do)">Do</option><option value="ขั้นตรวจสอบ (Check)">Check</option><option value="ขั้นประเมินผล (Action)">Act</option></select></td><td><input type="text" class="form-control pdca-task" placeholder="ระบุกิจกรรม"></td><td><select id="${id}" class="form-select pdca-quarter select2-checkbox" multiple="multiple"><option value="ไตรมาส 1">ไตรมาส 1 (ต.ค.-ธ.ค.)</option><option value="ไตรมาส 2">ไตรมาส 2 (ม.ค.-มี.ค.)</option><option value="ไตรมาส 3">ไตรมาส 3 (เม.ย.-มิ.ย.)</option><option value="ไตรมาส 4">ไตรมาส 4 (ก.ค.-ก.ย.)</option></select></td><td><input type="number" class="form-control pdca-budget" placeholder="0"></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`;
             $('#pdcaBody').append(tr);
             $(`#${id}`).select2({ placeholder: "เลือกไตรมาส", closeOnSelect: false, templateResult: formatSelect2Checkbox });
@@ -447,8 +444,12 @@
         function showPage(pageId) {
             ['dashboard', 'projectList', 'form'].forEach(id => document.getElementById('page-' + id).style.display = 'none');
             document.getElementById('page-' + pageId).style.display = 'block';
+            
+            // อัปเดตแถบเมนูด้านซ้าย แบบปลอดภัย
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if(pageId === 'dashboard') document.getElementById('menu-dashboard').classList.add('active');
+            if(pageId === 'projectList') document.getElementById('menu-list').classList.add('active');
+            if(pageId === 'form') document.getElementById('menu-form').classList.add('active');
         }
 
         function openForm() {
