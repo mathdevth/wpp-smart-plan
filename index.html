@@ -59,7 +59,7 @@
         .a4-print { display: none; background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: auto; font-family: 'Sarabun', sans-serif; font-size: 16pt; color: #000; line-height: 1.5;}
         @media print {
             body * { visibility: hidden; }
-            body { background: white; }
+            body { background: white; margin: 0; }
             .a4-print, .a4-print * { visibility: visible; }
             .a4-print { display: block; position: absolute; left: 0; top: 0; padding: 0; width: 100%; box-shadow: none;}
             .page-break { page-break-before: always; }
@@ -73,10 +73,9 @@
     <div class="sidebar no-print">
         <h4 class="text-center mb-4 fw-bold" style="color: #4facfe;">✨ Smart Plan</h4>
         <nav class="nav flex-column">
-            <!-- สังเกตการเพิ่ม ID เพื่อให้ระบบควบคุม active ได้ง่ายขึ้น -->
-            <a class="nav-link active" id="menu-dashboard" href="#" onclick="showPage('dashboard')"><i class="fas fa-home me-2"></i> หน้าหลัก</a>
-            <a class="nav-link" id="menu-list" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> รายการโครงการ</a>
-            <a class="nav-link" id="menu-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
+            <a class="nav-link active" id="nav-dashboard" href="#" onclick="showPage('dashboard')"><i class="fas fa-home me-2"></i> หน้าหลัก</a>
+            <a class="nav-link" id="nav-list" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> รายการโครงการ</a>
+            <a class="nav-link" id="nav-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
         </nav>
     </div>
 
@@ -142,7 +141,7 @@
                             <div class="col-md-12">
                                 <label class="form-label d-flex justify-content-between">
                                     <span>กิจกรรมย่อยในโครงการ</span>
-                                    <button class="btn btn-sm btn-success" onclick="addListRow('actBody', 'กิจกรรม')">+ เพิ่มกิจกรรม</button>
+                                    <button class="btn btn-sm btn-success" onclick="addListRow('actBody', 'กิจกรรมที่ 1...')">+ เพิ่มกิจกรรม</button>
                                 </label>
                                 <div id="actBody"></div>
                             </div>
@@ -336,7 +335,6 @@
         </table>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // 🔴 เชื่อมต่อ Google Apps Script
@@ -368,7 +366,6 @@
             $('#' + selectId).html(html);
         }
 
-        // ปรับเทอมอัตโนมัติตามปีงบประมาณ
         function updateTermOptions() {
             let year = parseInt(document.getElementById('fYear').value);
             let html = `<option value="( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})">( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})</option>
@@ -397,6 +394,36 @@
             });
         });
 
+        // ================= ควบคุมการเปลี่ยนหน้า =================
+        function showPage(pageId) {
+            // ซ่อนหน้าทั้งหมด
+            document.getElementById('page-dashboard').style.display = 'none';
+            document.getElementById('page-projectList').style.display = 'none';
+            document.getElementById('page-form').style.display = 'none';
+            
+            // แสดงหน้าที่ถูกเรียก
+            document.getElementById('page-' + pageId).style.display = 'block';
+            
+            // ลบแถบสีฟ้าออกจากเมนูทั้งหมด
+            document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
+            
+            // ใส่แถบสีฟ้าในเมนูที่ถูกกด
+            if(pageId === 'dashboard') document.getElementById('nav-dashboard').classList.add('active');
+            if(pageId === 'projectList') document.getElementById('nav-list').classList.add('active');
+            if(pageId === 'form') document.getElementById('nav-form').classList.add('active');
+        }
+
+        function initCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            if(calendarEl.innerHTML !== "") return;
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', locale: 'th',
+                events: [{ title: 'ส่งแผนปฏิบัติการ', start: '2026-03-30', color: '#ff758c' }, { title: 'ประเมินคุณภาพภายใน', start: '2026-05-15', color: '#4facfe' }]
+            });
+            calendar.render();
+        }
+        window.onload = initCalendar;
+
         // ================= Dynamic Lists & Tables =================
         function addListRow(containerId, placeholder) {
             let div = document.createElement('div'); div.className = 'input-group mb-2';
@@ -422,8 +449,13 @@
         function calcDays(el) {
             let tr = el.closest('tr'); let start = tr.querySelector('.cal-start').value; let end = tr.querySelector('.cal-end').value;
             if(start && end) {
-                let diffTime = Math.abs(new Date(end) - new Date(start));
-                tr.querySelector('.cal-days').value = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                let startDate = new Date(start); let endDate = new Date(end);
+                if(endDate >= startDate) {
+                    let diffTime = Math.abs(endDate - startDate);
+                    tr.querySelector('.cal-days').value = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                } else {
+                    tr.querySelector('.cal-days').value = "วันที่ผิด";
+                }
             }
         }
 
@@ -440,28 +472,29 @@
         function calcBudget(el) { let tr = el.closest('tr'); let qty = tr.querySelector('.bg-qty').value || 0; let price = tr.querySelector('.bg-price').value || 0; tr.querySelector('.bg-total').value = (qty * price); updateGrandTotal(); }
         function updateGrandTotal() { let sum = 0; document.querySelectorAll('.bg-total').forEach(t => sum += Number(t.value)); document.getElementById('fTotalBudget').value = sum; }
 
-        // ================= Operations =================
-        function showPage(pageId) {
-            ['dashboard', 'projectList', 'form'].forEach(id => document.getElementById('page-' + id).style.display = 'none');
-            document.getElementById('page-' + pageId).style.display = 'block';
-            
-            // อัปเดตแถบเมนูด้านซ้าย แบบปลอดภัย
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            if(pageId === 'dashboard') document.getElementById('menu-dashboard').classList.add('active');
-            if(pageId === 'projectList') document.getElementById('menu-list').classList.add('active');
-            if(pageId === 'form') document.getElementById('menu-form').classList.add('active');
-        }
-
+        // ================= เปิดหน้าฟอร์ม (แก้ไขบั๊กปุ่มกดไม่ได้แล้ว) =================
         function openForm() {
+            showPage('form'); // แสดงหน้าก่อน
+            
+            // ล้างข้อมูลเก่าทิ้ง
             document.getElementById('formId').value = "";
             document.querySelectorAll('input[type="text"]:not(#fYear), input[type="number"], textarea').forEach(el => el.value = "");
             $('.select2-checkbox').val(null).trigger('change');
             updateTermOptions();
-            ['actBody', 'objBody', 'goalQunBody', 'goalQualBody', 'kpiBody', 'riskBody', 'calBody', 'pdcaBody', 'budgetBody'].forEach(id => document.getElementById(id).innerHTML = "");
-            addListRow('objBody', 'เพื่อ...'); addListRow('goalQunBody', 'ร้อยละ/จำนวน...'); addListRow('goalQualBody', 'คุณภาพ/ความพึงพอใจ...'); addKpiRow(); addRiskRow(); addCalRow(); addPDCARow(); addBudgetRow();
-            showPage('form');
+            
+            // ล้างตาราง
+            ['actBody', 'objBody', 'goalQunBody', 'goalQualBody', 'kpiBody', 'riskBody', 'calBody', 'pdcaBody', 'budgetBody'].forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).innerHTML = "";
+            });
+            
+            // ใส่แถวว่าง 1 แถวให้เริ่มต้น
+            addListRow('objBody', 'เพื่อ...'); 
+            addListRow('goalQunBody', 'ร้อยละ/จำนวน...'); 
+            addListRow('goalQualBody', 'คุณภาพ/ความพึงพอใจ...'); 
+            addKpiRow(); addRiskRow(); addCalRow(); addPDCARow(); addBudgetRow();
         }
 
+        // ================= API Operations =================
         function loadProjects() {
             document.getElementById('projectTableBody').innerHTML = `<tr><td colspan="4" class="text-center">กำลังโหลด...</td></tr>`;
             fetch(API_URL).then(res => res.json()).then(result => {
