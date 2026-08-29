@@ -87,7 +87,7 @@
 
     <div class="main-content no-print">
         
-        <!-- DASHBOARD (ปฏิทินภาพรวม) -->
+        <!-- DASHBOARD -->
         <div id="page-dashboard">
             <h3 class="mb-4 fw-bold">ภาพรวมแผนปฏิบัติการ</h3>
             <div class="card-3d p-4"><div id="calendar" style="height: 500px;"></div></div>
@@ -103,11 +103,7 @@
                 <div class="d-flex justify-content-between mb-4">
                     <div class="w-25">
                         <label class="form-label text-muted mb-1">เลือกปีงบประมาณ</label>
-                        <select id="filterBudgetYear" class="form-select" onchange="loadProjects()">
-                            <option value="2569">พ.ศ. 2569</option>
-                            <option value="2570" selected>พ.ศ. 2570</option>
-                            <option value="2571">พ.ศ. 2571</option>
-                        </select>
+                        <select id="filterBudgetYear" class="form-select" onchange="loadProjects()"></select>
                     </div>
                     <div class="align-self-end">
                         <button class="btn btn-3d btn-blue px-4" onclick="loadProjects()"><i class="fas fa-sync"></i> อัปเดตข้อมูล</button>
@@ -190,7 +186,7 @@
             <h3 class="mb-4 fw-bold">ฐานข้อมูลโครงการ</h3>
             <div class="card-3d p-4">
                 <div class="d-flex justify-content-between mb-3">
-                    <input type="number" id="filterYear" class="form-control w-25" value="2570" placeholder="พิมพ์ปี พ.ศ.">
+                    <select id="filterYear" class="form-select w-25" onchange="loadProjects()"></select>
                     <button class="btn btn-3d btn-blue px-4" onclick="loadProjects()"><i class="fas fa-sync"></i> โหลดข้อมูล</button>
                 </div>
                 <div class="table-responsive">
@@ -230,7 +226,7 @@
                         <div class="row g-3">
                             <div class="col-md-2">
                                 <label class="form-label">ปีงบประมาณ</label>
-                                <input type="number" id="fYear" class="form-control fw-bold" value="2570" onchange="updateDynamicLabels()">
+                                <select id="fYear" class="form-select fw-bold" onchange="updateDynamicLabels()"></select>
                             </div>
                             <div class="col-md-10">
                                 <label class="form-label">1. ชื่อโครงการ</label>
@@ -260,7 +256,6 @@
                                 <select id="fProjType" class="form-select"><option value="โครงการต่อเนื่อง">โครงการต่อเนื่อง</option><option value="โครงการใหม่">โครงการใหม่</option></select>
                             </div>
                             
-                            <!-- Custom Checkbox Dropdown: ผู้รับผิดชอบ -->
                             <div class="col-md-6">
                                 <label class="form-label">9. ผู้รับผิดชอบ (เลือกได้หลายคน หรือกลุ่มงาน)</label>
                                 <div class="dropdown">
@@ -601,6 +596,17 @@
         }
 
         // ================= Initialization =================
+        function populateYears() {
+            let currentYear = 2570;
+            let html = "";
+            for (let y = 2560; y <= 2600; y++) {
+                html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>พ.ศ. ${y}</option>`;
+            }
+            if(document.getElementById('fYear')) document.getElementById('fYear').innerHTML = html;
+            if(document.getElementById('filterYear')) document.getElementById('filterYear').innerHTML = html;
+            if(document.getElementById('filterBudgetYear')) document.getElementById('filterBudgetYear').innerHTML = html;
+        }
+
         function updateDynamicLabels() {
             let year = parseInt(document.getElementById('fYear').value) || 2570;
             let terms = [{ group: "", items: [`( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})`, `( / ) ภาคเรียนที่ 1 ปีการศึกษา ${year} (1 พ.ค. ${year} - 30 ก.ย. ${year})`] }];
@@ -619,6 +625,7 @@
         }
 
         window.onload = function() {
+            populateYears();
             initCalendar();
             loadSettings();
             buildCheckboxDropdown('listManager', 'btnManager', managers, 'manager');
@@ -943,6 +950,7 @@
             (p.generalInfo.risks || []).forEach(r => addRiskRow(r.factor, r.sol));
             (p.calendar || []).forEach(r => addCalRow(r.task, r.start, r.end, r.days));
             
+            // Rebuild PDCA
             if(p.pdca && p.pdca.length > 0 && p.pdca[0].actName !== undefined) {
                 p.pdca.forEach((grp, index) => {
                     let tableId = `pdca_tbl_${index}`;
@@ -951,6 +959,7 @@
                 });
             } else { generatePDCATables(); }
 
+            // Rebuild Budget Groups
             if(p.budgetDetails && p.budgetDetails.length > 0) {
                 if(p.budgetDetails[0].groupName !== undefined) {
                     p.budgetDetails.forEach(grp => { let gId = addBudgetGroup(grp.groupName); grp.items.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.qty, i.price, i.total)); updateGroupTotal(document.getElementById(gId)); });
