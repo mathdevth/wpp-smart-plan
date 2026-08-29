@@ -10,8 +10,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     
     <!-- ฟอนต์ Prompt (หน้าเว็บ) และ Sarabun (สำหรับปริ้น) -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -48,12 +46,14 @@
         .nav-pills .nav-link.active { background: var(--purple-grad); color: #333; font-weight: bold; }
         .form-label { font-weight: 500; color: #555; font-size: 0.95rem; }
         .form-control, .form-select { border-radius: 10px; border: 1px solid #ddd; padding: 10px; }
+        .form-control:focus { box-shadow: 0 0 0 3px rgba(161, 196, 253, 0.3); border-color: #a1c4fd; }
         .hint-text { font-size: 0.85rem; color: #888; font-style: italic; display: block; margin-top: 4px; }
         
-        .select2-container--default .select2-selection--multiple { border-radius: 10px; border: 1px solid #ddd; padding: 5px; min-height: 45px;}
-        .select2-container--default .select2-selection--multiple .select2-selection__choice { background-color: #a1c4fd; border: none; color: #2c3e50; border-radius: 8px; padding: 3px 8px; margin-top: 5px;}
-        .select2-container--default .select2-results__group { background-color: #f0f4f8; color: #333; font-weight: bold; padding: 8px; }
-        .select2-results__option[aria-selected=true] { background-color: #e9ecef; }
+        /* สไตล์ Custom Checkbox Dropdown */
+        .custom-check-item { transition: 0.2s; border-radius: 8px; }
+        .custom-check-item:hover { background-color: #f0f4f8; }
+        .dropdown-menu { border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .dropdown-header { font-size: 0.9rem; letter-spacing: 0.5px; }
 
         /* A4 Print Layout */
         .a4-print { display: none; background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: auto; font-family: 'Sarabun', sans-serif; font-size: 16pt; color: #000; line-height: 1.5;}
@@ -160,26 +160,86 @@
                             <div class="col-md-6"><label class="form-label">8. ลักษณะโครงการ</label>
                                 <select id="fProjType" class="form-select"><option value="โครงการต่อเนื่อง">โครงการต่อเนื่อง</option><option value="โครงการใหม่">โครงการใหม่</option></select>
                             </div>
+                            
+                            <!-- Custom Checkbox Dropdown: ผู้รับผิดชอบ -->
                             <div class="col-md-6">
                                 <label class="form-label">9. ผู้รับผิดชอบ (เลือกได้หลายคน)</label>
-                                <select id="fManager" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnManager">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 90%;">คลิกเพื่อเลือกผู้รับผิดชอบ...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listManager"></div>
+                                </div>
                             </div>
 
+                            <!-- Custom Checkbox Dropdown: ระยะเวลาดำเนินการ -->
                             <div class="col-md-12">
                                 <label class="form-label">4. ระยะเวลาดำเนินการ (เปลี่ยนตามปีงบประมาณอัตโนมัติ)</label>
-                                <select id="fTime" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnTime">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกระยะเวลา...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listTime"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="tab2">
-                        <div class="alert alert-info py-2"><i class="fas fa-info-circle"></i> ติ๊กเลือกมาตรฐานที่สอดคล้องกับโครงการได้หลายหัวข้อ</div>
+                        <div class="alert alert-info py-2"><i class="fas fa-info-circle"></i> คลิกที่ช่องเพื่อกางเมนู และ <b>"ติ๊กถูก"</b> หน้าหัวข้อที่ต้องการได้หลายข้อพร้อมกัน</div>
                         <div class="row g-3">
-                            <div class="col-md-12"><label class="form-label">3. สนองมาตรฐานการศึกษาของสถานศึกษา</label><select id="fStdSchool" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select></div>
-                            <div class="col-md-12"><label class="form-label">4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</label><select id="fStdOnesqa" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select></div>
-                            <div class="col-md-12"><label class="form-label">5. สนองนโยบายและจุดเน้นของ สพฐ.</label><select id="fStdObec" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select></div>
-                            <div class="col-md-12"><label class="form-label">6. สนองนโยบายของ สพม.พล.อต.</label><select id="fStdSpm" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select></div>
-                            <div class="col-md-12"><label class="form-label">7. สนองกลยุทธ์ของโรงเรียน</label><select id="fStdStrategy" class="form-select select2-checkbox" multiple="multiple" style="width: 100%;"></select></div>
+                            <div class="col-md-12">
+                                <label class="form-label">3. สนองมาตรฐานการศึกษาของสถานศึกษา</label>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSchool">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกมาตรฐาน...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSchool"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</label>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdOnesqa">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกตัวชี้วัด...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdOnesqa"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">5. สนองนโยบายและจุดเน้นของ สพฐ.</label>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกนโยบาย...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">6. สนองนโยบายของ สพม.พล.อต.</label>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกนโยบาย...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">7. สนองกลยุทธ์ของโรงเรียน</label>
+                                <div class="dropdown">
+                                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy">
+                                        <span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือกกลยุทธ์...</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -234,7 +294,7 @@
                         <label class="form-label d-flex justify-content-between text-primary fs-5"><span>7. วิธีดำเนินการ (PDCA)</span><button class="btn btn-sm btn-success" onclick="addPDCARow()">+ เพิ่มกระบวนการ</button></label>
                         <span class="hint-text mb-2">คำแนะนำ: ระบุขั้นตอน P (วางแผน), D (ดำเนินการ), C (ตรวจสอบ), A (ประเมินและปรับปรุง)</span>
                         <table class="table table-bordered">
-                            <thead class="table-light text-center"><tr><th width="15%">ขั้นตอน</th><th>กิจกรรมดำเนินการ</th><th width="30%">ไตรมาสที่ดำเนินการ</th><th width="15%">งบ (บาท)</th><th width="5%">ลบ</th></tr></thead>
+                            <thead class="table-light text-center"><tr><th width="15%">ขั้นตอน</th><th>กิจกรรมดำเนินการ</th><th width="30%">ไตรมาสที่ดำเนินการ (คลิกเลือก)</th><th width="15%">งบ (บาท)</th><th width="5%">ลบ</th></tr></thead>
                             <tbody id="pdcaBody"></tbody>
                         </table>
                     </div>
@@ -277,11 +337,11 @@
             <tr><td><b>&nbsp;&nbsp; 2.1 งาน</b></td><td id="pSubDept"></td></tr>
         </table>
         
-        <div style="margin-top: 10px;"><b>3. สนองมาตรฐานการศึกษาของสถานศึกษา</b><ul id="pStdSchool" style="margin:5px 0;"></ul></div>
-        <div style="margin-top: 10px;"><b>4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</b><ul id="pStdOnesqa" style="margin:5px 0;"></ul></div>
-        <div style="margin-top: 10px;"><b>5. สนองนโยบายของ สพฐ.</b><ul id="pStdObec" style="margin:5px 0;"></ul></div>
-        <div style="margin-top: 10px;"><b>6. สนองนโยบายของ สพม.พล.อต.</b><ul id="pStdSpm" style="margin:5px 0;"></ul></div>
-        <div style="margin-top: 10px;"><b>7. สนองกลยุทธ์ของโรงเรียน</b><ul id="pStdStrategy" style="margin:5px 0;"></ul></div>
+        <div style="margin-top: 10px;"><b>3. สนองมาตรฐานการศึกษาของสถานศึกษา</b><ul id="pStdSchool" style="margin:5px 0; padding-left: 20px;"></ul></div>
+        <div style="margin-top: 10px;"><b>4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</b><ul id="pStdOnesqa" style="margin:5px 0; padding-left: 20px;"></ul></div>
+        <div style="margin-top: 10px;"><b>5. สนองนโยบายของ สพฐ.</b><ul id="pStdObec" style="margin:5px 0; padding-left: 20px;"></ul></div>
+        <div style="margin-top: 10px;"><b>6. สนองนโยบายของ สพม.พล.อต.</b><ul id="pStdSpm" style="margin:5px 0; padding-left: 20px;"></ul></div>
+        <div style="margin-top: 10px;"><b>7. สนองกลยุทธ์ของโรงเรียน</b><ul id="pStdStrategy" style="margin:5px 0; padding-left: 20px;"></ul></div>
         
         <div style="margin-top: 10px;"><b>8. ลักษณะโครงการ</b> &nbsp;&nbsp;&nbsp;&nbsp; <span id="pProjType"></span></div>
         <div style="margin-top: 10px;"><b>9. ผู้รับผิดชอบ</b><ul id="pManager" style="margin:5px 0; list-style-type: none; padding-left: 20px;"></ul></div>
@@ -335,6 +395,7 @@
         </table>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // 🔴 เชื่อมต่อ Google Apps Script
@@ -356,96 +417,90 @@
             strategy: [{ group: "กลยุทธ์ของโรงเรียน", items: ["ข้อที่ 1. พัฒนาหลักสูตรและการเรียนรู้ที่เน้นผู้เรียนเป็นสำคัญ", "ข้อที่ 2. ส่งเสริมการใช้เทคโนโลยีและนวัตกรรม", "ข้อที่ 3. เสริมสร้างคุณธรรม จริยธรรม ตามหลักเศรษฐกิจพอเพียง", "ข้อที่ 4. พัฒนาครูตามมาตรฐานวิชาชีพและสภาพแวดล้อม", "ข้อที่ 5. สร้างเครือข่ายความร่วมมือกับชุมชน"] }]
         };
 
-        function buildOptions(selectId, dataArr) {
-            let html = "";
+        // ================= Custom Checkbox Dropdown Generator =================
+        function buildCheckboxDropdown(listId, btnId, dataArr, nameAttr) {
+            let html = ""; let idx = 0;
             dataArr.forEach(group => {
-                html += `<optgroup label="${group.group}">`;
-                group.items.forEach(item => { html += `<option value="${item}">${item}</option>`; });
-                html += `</optgroup>`;
+                if (group.group) html += `<div class="dropdown-header fw-bold text-primary bg-light rounded mt-2 mb-1 px-2 py-1">${group.group}</div>`;
+                let items = group.items || group;
+                items.forEach(item => {
+                    idx++; let uniqueId = `chk_${listId}_${idx}`;
+                    html += `
+                    <div class="form-check px-3 py-1 custom-check-item m-0">
+                        <input class="form-check-input chk-${nameAttr}" type="checkbox" value="${item}" id="${uniqueId}" onchange="updateDropdownText('${nameAttr}', '${btnId}')">
+                        <label class="form-check-label w-100" style="cursor:pointer; font-size: 0.95rem;" for="${uniqueId}">${item}</label>
+                    </div>`;
+                });
             });
-            $('#' + selectId).html(html);
+            document.getElementById(listId).innerHTML = html;
         }
 
+        function updateDropdownText(nameAttr, btnId) {
+            let checked = document.querySelectorAll(`.chk-${nameAttr}:checked`);
+            let btnText = document.querySelector(`#${btnId} .dropdown-text`);
+            if (checked.length === 0) { btnText.innerHTML = "คลิกเพื่อเลือก..."; btnText.classList.add('text-muted'); }
+            else if (checked.length === 1) { btnText.innerHTML = checked[0].value; btnText.classList.remove('text-muted'); }
+            else { btnText.innerHTML = `เลือกแล้ว ${checked.length} รายการ`; btnText.classList.remove('text-muted'); }
+        }
+
+        function getCheckedValues(nameAttr) {
+            let arr = []; document.querySelectorAll(`.chk-${nameAttr}:checked`).forEach(el => arr.push(el.value)); return arr;
+        }
+
+        function setCheckedValues(nameAttr, btnId, valuesArr) {
+            document.querySelectorAll(`.chk-${nameAttr}`).forEach(el => { el.checked = (valuesArr && valuesArr.includes(el.value)); });
+            updateDropdownText(nameAttr, btnId);
+        }
+
+        // ================= Initialization =================
         function updateTermOptions() {
             let year = parseInt(document.getElementById('fYear').value);
-            let html = `<option value="( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})">( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})</option>
-                        <option value="( / ) ภาคเรียนที่ 1 ปีการศึกษา ${year} (1 พ.ค. ${year} - 30 ก.ย. ${year})">( / ) ภาคเรียนที่ 1 ปีการศึกษา ${year} (1 พ.ค. ${year} - 30 ก.ย. ${year})</option>`;
-            $('#fTime').html(html).trigger('change');
+            let terms = [{ group: "", items: [`( / ) ภาคเรียนที่ 2 ปีการศึกษา ${year-1} (1 ต.ค. ${year-1} - 30 เม.ย. ${year})`, `( / ) ภาคเรียนที่ 1 ปีการศึกษา ${year} (1 พ.ค. ${year} - 30 ก.ย. ${year})`] }];
+            buildCheckboxDropdown('listTime', 'btnTime', terms, 'time'); updateDropdownText('time', 'btnTime');
         }
 
-        function formatSelect2Checkbox(state) {
-            if (!state.id) return state.text;
-            return $(`<span><input type="checkbox" class="me-2" style="cursor:pointer;" ${state.selected ? 'checked' : ''} /> ${state.text}</span>`);
-        }
-
-        $(document).ready(function() {
-            buildOptions('fManager', managers);
-            buildOptions('fStdSchool', optionData.school);
-            buildOptions('fStdOnesqa', optionData.onesqa);
-            buildOptions('fStdObec', optionData.obec);
-            buildOptions('fStdSpm', optionData.spm);
-            buildOptions('fStdStrategy', optionData.strategy);
-            
+        window.onload = function() {
+            initCalendar();
+            buildCheckboxDropdown('listManager', 'btnManager', managers, 'manager');
+            buildCheckboxDropdown('listStdSchool', 'btnStdSchool', optionData.school, 'stdSchool');
+            buildCheckboxDropdown('listStdOnesqa', 'btnStdOnesqa', optionData.onesqa, 'stdOnesqa');
+            buildCheckboxDropdown('listStdObec', 'btnStdObec', optionData.obec, 'stdObec');
+            buildCheckboxDropdown('listStdSpm', 'btnStdSpm', optionData.spm, 'stdSpm');
+            buildCheckboxDropdown('listStdStrategy', 'btnStdStrategy', optionData.strategy, 'stdStrategy');
             updateTermOptions();
+        };
 
-            $('.select2-checkbox').select2({ 
-                placeholder: "คลิกเพื่อค้นหา หรือติ๊กเลือกหัวข้อที่ต้องการ", 
-                allowClear: true, closeOnSelect: false, templateResult: formatSelect2Checkbox
-            });
-        });
+        function initCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            if(calendarEl.innerHTML !== "") return;
+            var calendar = new FullCalendar.Calendar(calendarEl, { initialView: 'dayGridMonth', locale: 'th', events: [{ title: 'ส่งแผนปฏิบัติการ', start: '2026-03-30', color: '#ff758c' }, { title: 'ประเมินคุณภาพภายใน', start: '2026-05-15', color: '#4facfe' }] });
+            calendar.render();
+        }
 
-        // ================= ควบคุมการเปลี่ยนหน้า =================
+        // ================= Navigation =================
         function showPage(pageId) {
-            // ซ่อนหน้าทั้งหมด
-            document.getElementById('page-dashboard').style.display = 'none';
-            document.getElementById('page-projectList').style.display = 'none';
-            document.getElementById('page-form').style.display = 'none';
-            
-            // แสดงหน้าที่ถูกเรียก
+            ['dashboard', 'projectList', 'form'].forEach(id => document.getElementById('page-' + id).style.display = 'none');
             document.getElementById('page-' + pageId).style.display = 'block';
-            
-            // ลบแถบสีฟ้าออกจากเมนูทั้งหมด
             document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
-            
-            // ใส่แถบสีฟ้าในเมนูที่ถูกกด
             if(pageId === 'dashboard') document.getElementById('nav-dashboard').classList.add('active');
             if(pageId === 'projectList') document.getElementById('nav-list').classList.add('active');
             if(pageId === 'form') document.getElementById('nav-form').classList.add('active');
         }
 
-        function initCalendar() {
-            var calendarEl = document.getElementById('calendar');
-            if(calendarEl.innerHTML !== "") return;
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', locale: 'th',
-                events: [{ title: 'ส่งแผนปฏิบัติการ', start: '2026-03-30', color: '#ff758c' }, { title: 'ประเมินคุณภาพภายใน', start: '2026-05-15', color: '#4facfe' }]
-            });
-            calendar.render();
-        }
-        window.onload = initCalendar;
-
-        // ================= Dynamic Lists & Tables =================
+        // ================= Dynamic Lists =================
         function addListRow(containerId, placeholder) {
             let div = document.createElement('div'); div.className = 'input-group mb-2';
             div.innerHTML = `<input type="text" class="form-control list-item" placeholder="${placeholder}"><button class="btn btn-danger" onclick="this.parentElement.remove()">-</button>`;
             document.getElementById(containerId).appendChild(div);
         }
         function getListData(containerId) {
-            let arr = [];
-            document.querySelectorAll(`#${containerId} .list-item`).forEach(el => { if(el.value) arr.push(el.value); });
-            return arr;
+            let arr = []; document.querySelectorAll(`#${containerId} .list-item`).forEach(el => { if(el.value) arr.push(el.value); }); return arr;
         }
 
-        function addKpiRow() {
-            document.getElementById('kpiBody').insertAdjacentHTML('beforeend', `<tr><td><select class="form-select kpi-type"><option value="ผลผลิต (Outputs)">ผลผลิต</option><option value="ผลลัพธ์ (Outcomes)">ผลลัพธ์</option></select></td><td><input type="text" class="form-control kpi-ind"></td><td><input type="text" class="form-control kpi-met"></td><td><input type="text" class="form-control kpi-tool"></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`);
-        }
-        function addRiskRow() {
-            document.getElementById('riskBody').insertAdjacentHTML('beforeend', `<div class="row g-2 mb-2 risk-row"><div class="col-md-6"><input type="text" class="form-control r-factor" placeholder="ปัจจัยความเสี่ยง"></div><div class="col-md-5"><input type="text" class="form-control r-sol" placeholder="แนวทางบริหารความเสี่ยง"></div><div class="col-md-1"><button class="btn btn-danger w-100" onclick="this.closest('.risk-row').remove()">-</button></div></div>`);
-        }
+        function addKpiRow() { document.getElementById('kpiBody').insertAdjacentHTML('beforeend', `<tr><td><select class="form-select kpi-type"><option value="ผลผลิต (Outputs)">ผลผลิต</option><option value="ผลลัพธ์ (Outcomes)">ผลลัพธ์</option></select></td><td><input type="text" class="form-control kpi-ind"></td><td><input type="text" class="form-control kpi-met"></td><td><input type="text" class="form-control kpi-tool"></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`); }
+        function addRiskRow() { document.getElementById('riskBody').insertAdjacentHTML('beforeend', `<div class="row g-2 mb-2 risk-row"><div class="col-md-6"><input type="text" class="form-control r-factor" placeholder="ปัจจัยความเสี่ยง"></div><div class="col-md-5"><input type="text" class="form-control r-sol" placeholder="แนวทางบริหารความเสี่ยง"></div><div class="col-md-1"><button class="btn btn-danger w-100" onclick="this.closest('.risk-row').remove()">-</button></div></div>`); }
         
-        function addCalRow() { 
-            document.getElementById('calBody').insertAdjacentHTML('beforeend', `<tr><td><input type="text" class="form-control cal-task"></td><td><input type="date" class="form-control cal-start" onchange="calcDays(this)"></td><td><input type="date" class="form-control cal-end" onchange="calcDays(this)"></td><td><input type="text" class="form-control cal-days text-center" readonly></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`); 
-        }
+        function addCalRow() { document.getElementById('calBody').insertAdjacentHTML('beforeend', `<tr><td><input type="text" class="form-control cal-task"></td><td><input type="date" class="form-control cal-start" onchange="calcDays(this)"></td><td><input type="date" class="form-control cal-end" onchange="calcDays(this)"></td><td><input type="text" class="form-control cal-days text-center" readonly></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`); }
         function calcDays(el) {
             let tr = el.closest('tr'); let start = tr.querySelector('.cal-start').value; let end = tr.querySelector('.cal-end').value;
             if(start && end) {
@@ -453,48 +508,44 @@
                 if(endDate >= startDate) {
                     let diffTime = Math.abs(endDate - startDate);
                     tr.querySelector('.cal-days').value = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                } else {
-                    tr.querySelector('.cal-days').value = "วันที่ผิด";
-                }
+                } else { tr.querySelector('.cal-days').value = "วันที่ผิด"; }
             }
         }
 
         function addPDCARow() { 
-            let id = 'q-' + Math.random().toString(36).substr(2, 9);
-            let tr = `<tr><td><select class="form-select pdca-phase"><option value="ขั้นวางแผน (Plan)">Plan</option><option value="ขั้นดำเนินการ (Do)">Do</option><option value="ขั้นตรวจสอบ (Check)">Check</option><option value="ขั้นประเมินผล (Action)">Act</option></select></td><td><input type="text" class="form-control pdca-task" placeholder="ระบุกิจกรรม"></td><td><select id="${id}" class="form-select pdca-quarter select2-checkbox" multiple="multiple"><option value="ไตรมาส 1">ไตรมาส 1 (ต.ค.-ธ.ค.)</option><option value="ไตรมาส 2">ไตรมาส 2 (ม.ค.-มี.ค.)</option><option value="ไตรมาส 3">ไตรมาส 3 (เม.ย.-มิ.ย.)</option><option value="ไตรมาส 4">ไตรมาส 4 (ก.ค.-ก.ย.)</option></select></td><td><input type="number" class="form-control pdca-budget" placeholder="0"></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`;
+            let idBtn = 'btn-q-' + Math.random().toString(36).substr(2, 9); let idList = 'list-q-' + Math.random().toString(36).substr(2, 9);
+            let tr = `<tr><td><select class="form-select pdca-phase"><option value="ขั้นวางแผน (Plan)">Plan</option><option value="ขั้นดำเนินการ (Do)">Do</option><option value="ขั้นตรวจสอบ (Check)">Check</option><option value="ขั้นประเมินผล (Action)">Act</option></select></td><td><input type="text" class="form-control pdca-task" placeholder="ระบุกิจกรรม"></td>
+            <td>
+                <div class="dropdown pdca-quarter-container">
+                    <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="${idBtn}">
+                        <span class="dropdown-text text-muted text-truncate" style="max-width: 90%;">เลือก...</span><i class="fas fa-chevron-down text-muted"></i>
+                    </button>
+                    <div class="dropdown-menu p-2 shadow" id="${idList}"></div>
+                </div>
+            </td>
+            <td><input type="number" class="form-control pdca-budget" placeholder="0"></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button></td></tr>`;
             $('#pdcaBody').append(tr);
-            $(`#${id}`).select2({ placeholder: "เลือกไตรมาส", closeOnSelect: false, templateResult: formatSelect2Checkbox });
+            buildCheckboxDropdown(idList, idBtn, [{ group: "", items: ["ไตรมาส 1 (ต.ค.-ธ.ค.)", "ไตรมาส 2 (ม.ค.-มี.ค.)", "ไตรมาส 3 (เม.ย.-มิ.ย.)", "ไตรมาส 4 (ก.ค.-ก.ย.)"] }], idBtn);
         }
 
-        function addBudgetRow() { 
-            document.getElementById('budgetBody').insertAdjacentHTML('beforeend', `<tr><td><select class="form-select bg-type"><option value="ค่าตอบแทน">ค่าตอบแทน</option><option value="ค่าใช้สอย">ค่าใช้สอย</option><option value="ค่าวัสดุ">ค่าวัสดุ</option><option value="ค่าครุภัณฑ์">ค่าครุภัณฑ์</option><option value="อื่นๆ">อื่นๆ</option></select></td><td><input type="text" class="form-control bg-item"></td><td><input type="number" class="form-control bg-qty" onkeyup="calcBudget(this)"></td><td><input type="number" class="form-control bg-price" onkeyup="calcBudget(this)"></td><td><input type="number" class="form-control bg-total" readonly></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove(); updateGrandTotal();">-</button></td></tr>`); 
-        }
+        function addBudgetRow() { document.getElementById('budgetBody').insertAdjacentHTML('beforeend', `<tr><td><select class="form-select bg-type"><option value="ค่าตอบแทน">ค่าตอบแทน</option><option value="ค่าใช้สอย">ค่าใช้สอย</option><option value="ค่าวัสดุ">ค่าวัสดุ</option><option value="ค่าครุภัณฑ์">ค่าครุภัณฑ์</option><option value="อื่นๆ">อื่นๆ</option></select></td><td><input type="text" class="form-control bg-item"></td><td><input type="number" class="form-control bg-qty" onkeyup="calcBudget(this)"></td><td><input type="number" class="form-control bg-price" onkeyup="calcBudget(this)"></td><td><input type="number" class="form-control bg-total" readonly></td><td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove(); updateGrandTotal();">-</button></td></tr>`); }
         function calcBudget(el) { let tr = el.closest('tr'); let qty = tr.querySelector('.bg-qty').value || 0; let price = tr.querySelector('.bg-price').value || 0; tr.querySelector('.bg-total').value = (qty * price); updateGrandTotal(); }
         function updateGrandTotal() { let sum = 0; document.querySelectorAll('.bg-total').forEach(t => sum += Number(t.value)); document.getElementById('fTotalBudget').value = sum; }
 
-        // ================= เปิดหน้าฟอร์ม (แก้ไขบั๊กปุ่มกดไม่ได้แล้ว) =================
+        // ================= API Operations =================
         function openForm() {
-            showPage('form'); // แสดงหน้าก่อน
-            
-            // ล้างข้อมูลเก่าทิ้ง
             document.getElementById('formId').value = "";
             document.querySelectorAll('input[type="text"]:not(#fYear), input[type="number"], textarea').forEach(el => el.value = "");
-            $('.select2-checkbox').val(null).trigger('change');
+            
+            ['manager', 'time', 'stdSchool', 'stdOnesqa', 'stdObec', 'stdSpm', 'stdStrategy'].forEach(attr => setCheckedValues(attr, 'btn' + attr.charAt(0).toUpperCase() + attr.slice(1), []));
             updateTermOptions();
             
-            // ล้างตาราง
-            ['actBody', 'objBody', 'goalQunBody', 'goalQualBody', 'kpiBody', 'riskBody', 'calBody', 'pdcaBody', 'budgetBody'].forEach(id => {
-                if(document.getElementById(id)) document.getElementById(id).innerHTML = "";
-            });
+            ['actBody', 'objBody', 'goalQunBody', 'goalQualBody', 'kpiBody', 'riskBody', 'calBody', 'pdcaBody', 'budgetBody'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerHTML = ""; });
             
-            // ใส่แถวว่าง 1 แถวให้เริ่มต้น
-            addListRow('objBody', 'เพื่อ...'); 
-            addListRow('goalQunBody', 'ร้อยละ/จำนวน...'); 
-            addListRow('goalQualBody', 'คุณภาพ/ความพึงพอใจ...'); 
-            addKpiRow(); addRiskRow(); addCalRow(); addPDCARow(); addBudgetRow();
+            addListRow('objBody', 'เพื่อ...'); addListRow('goalQunBody', 'ร้อยละ/จำนวน...'); addListRow('goalQualBody', 'คุณภาพ/ความพึงพอใจ...'); addKpiRow(); addRiskRow(); addCalRow(); addPDCARow(); addBudgetRow();
+            showPage('form');
         }
 
-        // ================= API Operations =================
         function loadProjects() {
             document.getElementById('projectTableBody').innerHTML = `<tr><td colspan="4" class="text-center">กำลังโหลด...</td></tr>`;
             fetch(API_URL).then(res => res.json()).then(result => {
@@ -509,15 +560,15 @@
             document.querySelectorAll('#kpiBody tr').forEach(tr => kpis.push({ type: tr.querySelector('.kpi-type').value, ind: tr.querySelector('.kpi-ind').value, met: tr.querySelector('.kpi-met').value, tool: tr.querySelector('.kpi-tool').value }));
             document.querySelectorAll('.risk-row').forEach(tr => risks.push({ factor: tr.querySelector('.r-factor').value, sol: tr.querySelector('.r-sol').value }));
             document.querySelectorAll('#calBody tr').forEach(tr => cals.push({ task: tr.querySelector('.cal-task').value, start: tr.querySelector('.cal-start').value, end: tr.querySelector('.cal-end').value, days: tr.querySelector('.cal-days').value }));
-            document.querySelectorAll('#pdcaBody tr').forEach(tr => pdcas.push({ phase: tr.querySelector('.pdca-phase').value, task: tr.querySelector('.pdca-task').value, q: $(tr.querySelector('.pdca-quarter')).val(), budget: tr.querySelector('.pdca-budget').value }));
+            document.querySelectorAll('#pdcaBody tr').forEach(tr => { let qId = tr.querySelector('.pdca-quarter-container button').id; pdcas.push({ phase: tr.querySelector('.pdca-phase').value, task: tr.querySelector('.pdca-task').value, q: getCheckedValues(qId), budget: tr.querySelector('.pdca-budget').value }); });
             document.querySelectorAll('#budgetBody tr').forEach(tr => budgets.push({ type: tr.querySelector('.bg-type').value, item: tr.querySelector('.bg-item').value, qty: tr.querySelector('.bg-qty').value, price: tr.querySelector('.bg-price').value, total: tr.querySelector('.bg-total').value }));
 
             const data = {
-                action: "save", id: document.getElementById('formId').value, year: document.getElementById('fYear').value, projectName: document.getElementById('fName').value, department: document.getElementById('fDept').value, subDept: document.getElementById('fSubDept').value, projType: document.getElementById('fProjType').value, manager: $('#fManager').val() || [], time: $('#fTime').val() || [], budgetTotal: document.getElementById('fTotalBudget').value,
+                action: "save", id: document.getElementById('formId').value, year: document.getElementById('fYear').value, projectName: document.getElementById('fName').value, department: document.getElementById('fDept').value, subDept: document.getElementById('fSubDept').value, projType: document.getElementById('fProjType').value, manager: getCheckedValues('manager'), time: getCheckedValues('time'), budgetTotal: document.getElementById('fTotalBudget').value,
                 generalInfo: { 
                     activities: getListData('actBody'), reason: document.getElementById('fReason').value, obj: getListData('objBody'), goalQun: getListData('goalQunBody'), goalQual: getListData('goalQualBody'),
                     kpis: kpis, risks: risks, bgSrc: [$('#fBgSrc1').val(), $('#fBgSrc2').val(), $('#fBgSrc3').val(), $('#fBgSrc4').val(), $('#fBgSrc5').val()],
-                    stdSchool: $('#fStdSchool').val() || [], stdOnesqa: $('#fStdOnesqa').val() || [], stdObec: $('#fStdObec').val() || [], stdSpm: $('#fStdSpm').val() || [], stdStrategy: $('#fStdStrategy').val() || []
+                    stdSchool: getCheckedValues('stdSchool'), stdOnesqa: getCheckedValues('stdOnesqa'), stdObec: getCheckedValues('stdObec'), stdSpm: getCheckedValues('stdSpm'), stdStrategy: getCheckedValues('stdStrategy')
                 },
                 calendar: cals, pdca: pdcas, budgetDetails: budgets
             };
@@ -534,12 +585,15 @@
             
             const liHTML = arr => (arr || []).map(v => `<li>${v}</li>`).join('');
             document.getElementById('pActivities').innerHTML = liHTML(getListData('actBody'));
-            document.getElementById('pManager').innerHTML = liHTML($('#fManager').val());
-            document.getElementById('pSigManager').innerText = ($('#fManager').val() || [])[0] || "......................................................"; 
-            document.getElementById('pTime').innerHTML = liHTML($('#fTime').val());
+            document.getElementById('pManager').innerHTML = liHTML(getCheckedValues('manager'));
+            document.getElementById('pSigManager').innerText = (getCheckedValues('manager') || [])[0] || "......................................................"; 
+            document.getElementById('pTime').innerHTML = liHTML(getCheckedValues('time'));
             document.getElementById('pProjType').innerHTML = document.getElementById('fProjType').value === 'โครงการใหม่' ? '( / ) โครงการใหม่ &nbsp;&nbsp; (  ) โครงการต่อเนื่อง' : '(  ) โครงการใหม่ &nbsp;&nbsp; ( / ) โครงการต่อเนื่อง';
 
-            ['StdSchool', 'StdOnesqa', 'StdObec', 'StdSpm', 'StdStrategy'].forEach(id => document.getElementById('p'+id).innerHTML = liHTML($('#f'+id).val()));
+            ['StdSchool', 'StdOnesqa', 'StdObec', 'StdSpm', 'StdStrategy'].forEach(id => {
+                let attr = id.charAt(0).toLowerCase() + id.slice(1);
+                document.getElementById('p'+id).innerHTML = liHTML(getCheckedValues(attr));
+            });
 
             document.getElementById('pReason').innerText = document.getElementById('fReason').value;
             document.getElementById('pObj').innerHTML = liHTML(getListData('objBody'));
@@ -550,7 +604,7 @@
             document.getElementById('pBgSrcTable').innerHTML = `<tr><th>แหล่งที่มา</th><th>จำนวน (บาท)</th></tr><tr><td>เงินอุดหนุนรายหัว (ปัจจุบัน)</td><td>${Number($('#fBgSrc1').val()).toLocaleString()}</td></tr><tr><td>เงินอุดหนุนรายหัว (ล่วงหน้า)</td><td>${Number($('#fBgSrc2').val()).toLocaleString()}</td></tr><tr><td>เงินกิจกรรมพัฒนาคุณภาพผู้เรียน</td><td>${Number($('#fBgSrc3').val()).toLocaleString()}</td></tr><tr><td>เงินรายได้สถานศึกษา</td><td>${Number($('#fBgSrc4').val()).toLocaleString()}</td></tr><tr><td>อื่นๆ</td><td>${Number($('#fBgSrc5').val()).toLocaleString()}</td></tr>`;
 
             let calHtml = "<tr><th>รายการ</th><th>วันที่</th><th>จำนวนวัน</th></tr>"; document.querySelectorAll('#calBody tr').forEach(tr => { let t = tr.querySelector('.cal-task').value; let s = tr.querySelector('.cal-start').value; let e = tr.querySelector('.cal-end').value; let d = tr.querySelector('.cal-days').value; if(t) calHtml += `<tr><td>${t}</td><td style="text-align:center;">${s} ถึง ${e}</td><td style="text-align:center;">${d}</td></tr>`; }); document.getElementById('pCalTable').innerHTML = calHtml;
-            let pdcaHtml = "<tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส</th><th>งบประมาณ</th></tr>"; document.querySelectorAll('#pdcaBody tr').forEach(tr => { let p = tr.querySelector('.pdca-phase').value; let t = tr.querySelector('.pdca-task').value; let q = ($(tr.querySelector('.pdca-quarter')).val()||[]).join(', '); let b = tr.querySelector('.pdca-budget').value; if(t) pdcaHtml += `<tr><td>${p}</td><td>${t}</td><td style="text-align:center;">${q}</td><td style="text-align:center;">${Number(b).toLocaleString()}</td></tr>`; }); document.getElementById('pPDCATable').innerHTML = pdcaHtml;
+            let pdcaHtml = "<tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส</th><th>งบประมาณ</th></tr>"; document.querySelectorAll('#pdcaBody tr').forEach(tr => { let p = tr.querySelector('.pdca-phase').value; let t = tr.querySelector('.pdca-task').value; let qId = tr.querySelector('.pdca-quarter-container button').id; let q = (getCheckedValues(qId)||[]).join(', '); let b = tr.querySelector('.pdca-budget').value; if(t) pdcaHtml += `<tr><td>${p}</td><td>${t}</td><td style="text-align:center;">${q}</td><td style="text-align:center;">${Number(b).toLocaleString()}</td></tr>`; }); document.getElementById('pPDCATable').innerHTML = pdcaHtml;
             let bgHtml = "<tr><th>ประเภท</th><th>รายการ</th><th>จำนวน</th><th>ราคา/หน่วย</th><th>รวม(บาท)</th></tr>"; document.querySelectorAll('#budgetBody tr').forEach(tr => { let ty = tr.querySelector('.bg-type').value; let i = tr.querySelector('.bg-item').value; let q = tr.querySelector('.bg-qty').value; let p = tr.querySelector('.bg-price').value; let t = tr.querySelector('.bg-total').value; if(i) bgHtml += `<tr><td>${ty}</td><td>${i}</td><td style="text-align:center;">${q}</td><td style="text-align:right;">${Number(p).toLocaleString()}</td><td style="text-align:right;">${Number(t).toLocaleString()}</td></tr>`; }); document.getElementById('pBudgetTable').innerHTML = bgHtml;
             
             let kpiHtml = "<tr><th>ประเภท</th><th>ตัวชี้วัดความสำเร็จ</th><th>วิธีประเมิน</th><th>เครื่องมือที่ใช้</th></tr>"; document.querySelectorAll('#kpiBody tr').forEach(tr => { let ty = tr.querySelector('.kpi-type').value; let i = tr.querySelector('.kpi-ind').value; let m = tr.querySelector('.kpi-met').value; let t = tr.querySelector('.kpi-tool').value; if(i) kpiHtml += `<tr><td>${ty}</td><td>${i}</td><td>${m}</td><td>${t}</td></tr>`; }); document.getElementById('pKpiTable').innerHTML = kpiHtml;
