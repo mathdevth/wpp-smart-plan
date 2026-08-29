@@ -11,10 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <!-- เพิ่ม Chart.js สำหรับทำกราฟนำเสนอ -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     
-    <!-- ฟอนต์ Prompt (หน้าเว็บ) และ Sarabun (สำหรับพิมพ์) -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -24,6 +23,7 @@
             --purple-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             --bg-color: #f7f9fc;
         }
+        
         body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); margin: 0; color: #444; }
         
         /* Login Overlay */
@@ -102,7 +102,10 @@
                     <input type="password" id="loginPassword" class="form-control" placeholder="••••••••">
                 </div>
                 <button class="btn btn-3d btn-blue w-100 py-2 fs-5 mb-3" onclick="performLogin()">เข้าสู่ระบบ</button>
-                <a href="#" onclick="togglePasswordForm()" class="text-muted text-decoration-none">เปลี่ยนรหัสผ่าน?</a>
+                <div class="d-flex justify-content-between">
+                    <a href="#" onclick="togglePasswordForm()" class="text-muted text-decoration-none"><small>เปลี่ยนรหัสผ่าน?</small></a>
+                    <a href="#" onclick="loginAsGuest()" class="text-primary text-decoration-none fw-bold"><small><i class="fas fa-eye"></i> เข้าชมในฐานะบุคคลทั่วไป</small></a>
+                </div>
             </div>
 
             <!-- เปลี่ยนรหัสผ่าน -->
@@ -128,19 +131,27 @@
             <a class="nav-link active" id="nav-dashboard" href="#" onclick="showPage('dashboard')"><i class="fas fa-calendar-alt me-2"></i> ปฏิทิน & แผนงาน</a>
             <a class="nav-link" id="nav-list" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> ฐานข้อมูลโครงการ</a>
             <a class="nav-link" id="nav-budget" href="#" onclick="showPage('budget')"><i class="fas fa-chart-line me-2"></i> ติดตามงบประมาณ</a>
-            <hr>
-            <div class="text-muted fw-bold mb-2 ps-2" style="font-size: 0.85rem;">ระบบจัดการโครงการ</div>
-            <a class="nav-link" id="nav-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
-            <hr>
-            <div class="text-muted fw-bold mb-2 ps-2" style="font-size: 0.85rem;">ระบบขออนุมัติ</div>
-            <a class="nav-link text-primary" id="nav-req-act" href="#" onclick="showPage('req-activity')"><i class="fas fa-file-signature me-2"></i> บันทึกขอจัดกิจกรรม</a>
-            <a class="nav-link text-danger" id="nav-req-buy" href="#" onclick="showPage('req-purchase')"><i class="fas fa-shopping-cart me-2"></i> บันทึกขอจัดซื้อ/จัดจ้าง</a>
-            <hr>
+            
+            <div id="menu-project-management">
+                <hr>
+                <div class="text-muted fw-bold mb-2 ps-2" style="font-size: 0.85rem;">ระบบจัดการโครงการ</div>
+                <a class="nav-link" id="nav-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
+            </div>
+            
+            <div id="menu-approval-system">
+                <hr>
+                <div class="text-muted fw-bold mb-2 ps-2" style="font-size: 0.85rem;">ระบบขออนุมัติ</div>
+                <a class="nav-link text-primary" id="nav-req-act" href="#" onclick="showPage('req-activity')"><i class="fas fa-file-signature me-2"></i> บันทึกขอจัดกิจกรรม</a>
+                <a class="nav-link text-danger" id="nav-req-buy" href="#" onclick="showPage('req-purchase')"><i class="fas fa-shopping-cart me-2"></i> บันทึกขอจัดซื้อ/จัดจ้าง</a>
+            </div>
+
             <div id="adminMenuSection" style="display:none;">
+                <hr>
                 <div class="text-muted fw-bold mb-2 ps-2" style="font-size: 0.85rem;">ส่วนของผู้ดูแลระบบ</div>
                 <a class="nav-link text-muted" id="nav-users" href="#" onclick="showPage('users')"><i class="fas fa-users-cog me-2"></i> จัดการผู้ใช้งาน</a>
                 <a class="nav-link text-muted" id="nav-settings" href="#" onclick="showPage('settings')"><i class="fas fa-cog me-2"></i> ตั้งค่าระบบ (แอดมิน)</a>
             </div>
+            
             <a class="nav-link text-danger mt-3" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</a>
         </nav>
     </div>
@@ -165,13 +176,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqActProject" class="form-select" onchange="populateSubActivities('reqActProject', 'reqActSub')">
+                            <select id="reqActProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqActProject', 'reqActSub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqActSub" class="form-select">
+                            <select id="reqActSub" class="form-select select2-basic" style="width: 100%;">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -196,7 +207,7 @@
                         <div class="col-md-6"><label class="form-label">วันที่เริ่ม</label><input type="date" id="reqActStart" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">วันที่สิ้นสุด</label><input type="date" id="reqActEnd" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">งบประมาณที่ขออนุมัติ (บาท)</label><input type="number" id="reqActBudget" class="form-control" placeholder="0"></div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control" readonly></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control"></div>
                         
                         <div class="col-md-12 mt-4 text-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('activity')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
@@ -213,13 +224,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqBuyProject" class="form-select" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
+                            <select id="reqBuyProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqBuySub" class="form-select">
+                            <select id="reqBuySub" class="form-select select2-basic" style="width: 100%;">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -251,7 +262,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control" readonly></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control"></div>
                         <div class="col-md-6 text-end align-self-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('purchase')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
                             <button class="btn btn-3d btn-pink px-5" onclick="submitRequest('purchase')">ส่งคำขอจัดซื้อ/จัดจ้าง</button>
@@ -274,7 +285,7 @@
                         <div class="w-25">
                             <label class="form-label text-muted mb-1">เลือกปีงบประมาณ</label>
                             <select id="filterBudgetYear" class="form-select" onchange="loadProjects()">
-                                <!-- จะมีตัวเลือก "รวมทุกปีงบประมาณ" แทรกไว้ด้วยในตอน Populate -->
+                                <!-- ตัวเลือก "รวมทุกปีงบประมาณ" จะถูกสร้างด้วย JS -->
                             </select>
                         </div>
                         <div class="align-self-end">
@@ -304,20 +315,21 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle table-bordered text-center">
+                        <table class="table table-hover align-middle table-bordered text-center" style="font-size: 0.9em;">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="20%">โครงการ</th>
-                                    <th width="15%">ผู้รับผิดชอบ</th>
-                                    <th width="15%">แหล่งงบประมาณ</th>
-                                    <th>งบประมาณ</th>
+                                    <th width="15%">โครงการ</th>
+                                    <th width="10%">แหล่งงบประมาณ</th>
+                                    <th>งบปีปัจจุบัน</th>
+                                    <th>งบปีก่อนหน้า</th>
+                                    <th>รวมงบประมาณ</th>
                                     <th>รายจ่าย</th>
                                     <th>คงเหลือ</th>
-                                    <th>ใช้ไปแล้ว (%)</th>
+                                    <th width="15%">ใช้ไปแล้ว (%)</th>
                                     <th width="10%">รายละเอียด</th>
                                 </tr>
                             </thead>
-                            <tbody id="budgetTableBody"><tr><td colspan="8" class="text-center">กำลังโหลดข้อมูล...</td></tr></tbody>
+                            <tbody id="budgetTableBody"><tr><td colspan="9" class="text-center">กำลังโหลดข้อมูล...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -386,7 +398,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle text-center">
-                            <thead class="table-light"><tr><th>ปี พ.ศ.</th><th class="text-start">ชื่อโครงการ</th><th>ผู้รับผิดชอบ</th><th>ดูรายละเอียด</th><th>จัดการ</th></tr></thead>
+                            <thead class="table-light"><tr><th>ปี พ.ศ.</th><th class="text-start">ชื่อโครงการ</th><th>ผู้รับผิดชอบ</th><th>ดูรายละเอียด</th><th id="thManageProj">จัดการ</th></tr></thead>
                             <tbody id="projectTableBody"><tr><td colspan="5" class="text-center">คลิกโหลดข้อมูล</td></tr></tbody>
                         </table>
                     </div>
@@ -399,7 +411,8 @@
                     <h3 class="fw-bold">📝 แบบเสนอโครงการ (ผง.01)</h3>
                     <div>
                         <button class="btn btn-3d btn-pink px-4 me-2" onclick="saveProject()"><i class="fas fa-save"></i> บันทึก</button>
-                        <button class="btn btn-3d btn-blue px-4" onclick="printProject()"><i class="fas fa-print"></i> พิมพ์เอกสาร</button>
+                        <!-- ซ่อนการพิมพ์ไปก่อน รอทำ Word -->
+                        <button class="btn btn-3d btn-secondary px-4" disabled><i class="fas fa-file-word"></i> ส่งออก Word (กำลังพัฒนา)</button>
                     </div>
                 </div>
                 
@@ -485,14 +498,19 @@
                                 <div class="col-md-12"><label class="form-label text-primary fs-5">6. แหล่งที่มาของงบประมาณ</label></div>
                                 <div class="col-md-4"><label class="form-label" id="lblBg1">เงินอุดหนุนรายหัว (ปัจจุบัน)</label><input type="number" id="fBgSrc1" class="form-control" placeholder="0"></div>
                                 <div class="col-md-4"><label class="form-label" id="lblBg2">เงินอุดหนุนรายหัว (อดีต)</label><input type="number" id="fBgSrc2" class="form-control" placeholder="0"></div>
-                                <div class="col-md-4"><label class="form-label" id="lblBg3">เงินกิจกรรมฯ (ปัจจุบัน)</label><input type="number" id="fBgSrc3" class="form-control" placeholder="0"></div>
-                                <div class="col-md-4"><label class="form-label" id="lblBg4">เงินกิจกรรมฯ (อดีต)</label><input type="number" id="fBgSrc4" class="form-control" placeholder="0"></div>
+                                <div class="col-md-4"><label class="form-label" id="lblBg3">เงินกิจกรรมพัฒนาคุณภาพผู้เรียน (ปัจจุบัน)</label><input type="number" id="fBgSrc3" class="form-control" placeholder="0"></div>
+                                <div class="col-md-4"><label class="form-label" id="lblBg4">เงินกิจกรรมพัฒนาคุณภาพผู้เรียน (อดีต)</label><input type="number" id="fBgSrc4" class="form-control" placeholder="0"></div>
                                 <div class="col-md-4"><label class="form-label">เงินรายได้สถานศึกษา</label><input type="number" id="fBgSrc5" class="form-control" placeholder="0"></div>
                                 <div class="col-md-4"><label class="form-label">อื่นๆ โปรดระบุ</label><div class="d-flex"><input type="text" id="fBgSrc6Name" class="form-control me-1" placeholder="ระบุ..."><input type="number" id="fBgSrc6" class="form-control w-50" placeholder="0"></div></div>
                                 <div class="col-md-12"><label class="form-label font-weight-bold text-danger fs-5">รวมงบประมาณทั้งหมด : <span id="txtTotalBudget">0</span> บาท</label><input type="hidden" id="fTotalBudget"></div>
                             </div>
                             
-                            <label class="form-label d-flex justify-content-between text-primary fs-5"><span>10. รายละเอียดการใช้งบประมาณ (แบ่งกลุ่มตามกิจกรรมได้)</span><button class="btn btn-sm btn-primary" onclick="addBudgetGroup()">+ เพิ่มกลุ่มรายการ</button></label>
+                            <label class="form-label d-flex justify-content-between text-primary fs-5">
+                                <span>10. รายละเอียดการใช้งบประมาณ (แบ่งตามกิจกรรม)</span>
+                                <button class="btn btn-sm btn-primary" onclick="addBudgetGroup()">+ เพิ่มกิจกรรมที่ใช้งบ</button>
+                            </label>
+                            
+                            <!-- Container ของตารางงบ -->
                             <div id="budgetGroupsContainer"></div>
                             
                             <hr>
@@ -540,7 +558,7 @@
                             <p><b>งบประมาณที่ได้รับ:</b> <span id="pdBudget" class="text-primary fw-bold"></span> บาท</p>
                         </div>
                         <div class="col-md-6 d-flex justify-content-center">
-                            <div style="width: 250px; height: 250px;">
+                            <div style="width: 200px; height: 200px;">
                                 <canvas id="budgetChart"></canvas>
                             </div>
                         </div>
@@ -571,11 +589,11 @@
                     <h6 class="fw-bold text-secondary">ประวัติการเบิกจ่าย</h6>
                     <div class="table-responsive" style="max-height: 250px;">
                         <table class="table table-sm table-hover table-bordered text-center align-middle">
-                            <thead class="table-light sticky-top"><tr><th>วันที่</th><th>รายการเบิกจ่าย</th><th>จำนวนเงิน</th><th>ลบ</th></tr></thead>
+                            <thead class="table-light sticky-top"><tr><th>วันที่</th><th>รายการเบิกจ่าย</th><th>จำนวนเงิน</th><th id="thManageExp">ลบ</th></tr></thead>
                             <tbody id="expenseHistoryBody"></tbody>
                         </table>
                     </div>
-                    <div class="bg-light p-3 mt-3 shadow-sm border border-info" style="border-radius: 10px;">
+                    <div class="bg-light p-3 mt-3 shadow-sm border border-info" style="border-radius: 10px;" id="addExpenseBox">
                         <h6 class="fw-bold text-primary"><i class="fas fa-plus-circle"></i> บันทึกรายการเบิกจ่ายใหม่</h6>
                         <input type="hidden" id="mdlProjectId">
                         <div class="row g-2">
@@ -621,84 +639,15 @@
         </div>
     </div>
 
-    <!-- ================= A4 Print Layout ================= -->
-    <div class="a4-print" id="printArea">
-        <div style="text-align: right; font-weight: bold;">ผง. 01</div>
-        <div style="text-align: right;">โครงการที่ ..........................</div>
-        <div style="text-align: center; font-weight: bold; margin-top: 10px;">แบบเสนอโครงการตามแผนปฏิบัติการ ประจำปีงบประมาณ <span id="pYear"></span></div>
-        <br>
-        
-        <table style="width: 100%;">
-            <tr><td style="width: 20%; vertical-align:top;"><b>1. โครงการ</b></td><td id="pName"></td></tr>
-            <tr><td></td><td><ol id="pActivities" style="margin:5px 0; padding-left: 20px;"></ol></td></tr>
-            <tr><td style="vertical-align:top;"><b>2. กลุ่มบริหารงาน</b></td><td id="pDept"></td></tr>
-            <tr><td><b>&nbsp;&nbsp; 2.1 งาน</b></td><td id="pSubDept"></td></tr>
-        </table>
-        
-        <div style="margin-top: 10px;"><b>3. สนองมาตรฐานการศึกษาของสถานศึกษา</b><ul id="pStdSchool" style="margin:5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 10px;"><b>4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</b><ul id="pStdOnesqa" style="margin:5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 10px;"><b id="pLblObec">5. สนองนโยบายและจุดเน้นของ สพฐ.</b><ul id="pStdObec" style="margin:5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 10px;"><b id="pLblSpm">6. สนองนโยบายของ สพม.พล.อต.</b><ul id="pStdSpm" style="margin:5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 10px;"><b>7. สนองกลยุทธ์ของโรงเรียน</b><ul id="pStdStrategy" style="margin:5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 10px;"><b>8. ลักษณะโครงการ</b> &nbsp;&nbsp;&nbsp;&nbsp; <span id="pProjType"></span></div>
-        <div style="margin-top: 10px;"><b>9. ผู้รับผิดชอบ</b><ul id="pManager" style="margin:5px 0; list-style-type: none; padding-left: 20px;"></ul></div>
-
-        <div style="margin-top: 15px;"><b>1. หลักการและเหตุผล</b></div><div id="pReason" style="text-indent: 40px; text-align: justify; white-space: pre-line;"></div>
-        <div style="margin-top: 15px;"><b>2. วัตถุประสงค์</b></div><ol id="pObj" style="margin: 5px 0; padding-left: 40px;"></ol>
-        <div style="margin-top: 15px;"><b>3. เป้าหมาย</b></div>
-        <div style="margin-left: 20px;"><b>เชิงปริมาณ:</b> <ul id="pGoalQun" style="margin: 5px 0; padding-left: 20px;"></ul><b>เชิงคุณภาพ:</b> <ul id="pGoalQual" style="margin: 5px 0; padding-left: 20px;"></ul></div>
-        <div style="margin-top: 15px;"><b>4. ระยะเวลาดำเนินการ</b><ul id="pTime" style="margin: 5px 0; list-style-type: none; padding-left: 20px;"></ul></div>
-        
-        <div class="page-break"></div>
-
-        <div><b>5. ปฏิทินการจัดกิจกรรม</b></div><table class="print-table" id="pCalTable"></table>
-        <div style="margin-top: 15px;"><b>6. วงเงินงบประมาณทั้งหมด</b> <span id="pTotalBudget"></span> บาท</div><table class="print-table" id="pBgSrcTable"></table>
-        <div style="margin-top: 15px;"><b>7. วิธีดำเนินการ (PDCA)</b></div><div id="pPDCAContainer"></div>
-        <div style="margin-top: 15px;"><b>8. การติดตามประเมินผล</b></div><table class="print-table" id="pKpiTable"></table>
-        <div style="margin-top: 15px;"><b>ผลที่คาดว่าจะได้รับ (Target)</b></div><div id="pTarget" style="margin-left: 20px; white-space: pre-line;"></div>
-        <div style="margin-top: 15px;"><b>9. การวิเคราะห์ความเสี่ยง</b></div><table class="print-table" id="pRiskTable"></table>
-        
-        <div class="page-break"></div>
-
-        <div><b>10. รายละเอียดการใช้งบประมาณ</b></div><table class="print-table" id="pBudgetTable"></table>
-        
-        <table style="width: 100%; text-align: center; margin-top: 40px; line-height: 2;">
-            <tr>
-                <td style="width: 50%;">
-                    ลงชื่อ................................................................<br><img id="pSigImage" src="" style="max-height:40px; display:none;"><br>(<span id="pSigManager">......................................................</span>)<br>ผู้เสนอโครงการ
-                </td>
-                <td style="width: 50%;">
-                    ลงชื่อ................................................................<br>(<span id="pSigHeadDept">......................................................</span>)<br>หัวหน้า<span id="pSigDeptName">กลุ่มบริหารงาน...</span>
-                </td>
-            </tr>
-            <tr><td colspan="2"><br><br></td></tr>
-            <tr>
-                <td style="width: 50%;">
-                    ลงชื่อ................................................................<br>(<span id="pSigPlan">นายอชิตพล บุณรัตน์</span>)<br>หัวหน้างานนโยบายและแผนงาน<br>ผู้ตรวจสอบโครงการ
-                </td>
-                <td style="width: 50%;">
-                    ลงชื่อ................................................................<br>(<span id="pSigDeputy">นางสาวปทุมวดี วงษ์สุธรรม</span>)<br>รองผู้อำนวยการโรงเรียนวังโพรงพิทยาคม<br>ผู้เห็นชอบโครงการ
-                </td>
-            </tr>
-            <tr><td colspan="2"><br><br></td></tr>
-            <tr>
-                <td colspan="2">
-                    ความคิดเห็นผู้อำนวยการโรงเรียน<br>( &nbsp; ) อนุมัติ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) นำไปปรับปรุง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( &nbsp; ) ไม่อนุมัติ<br><br>
-                    ลงชื่อ................................................................<br>(<span id="pSigDirector">นายมนูญ บุบผาพ่วง</span>)<br>ผู้อำนวยการโรงเรียนวังโพรงพิทยาคม
-                </td>
-            </tr>
-        </table>
-    </div>
-
     <!-- ================= JAVASCRIPT ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 🔴 อย่าลืมนำ URL Apps Script อันใหม่มาใส่ตรงนี้
+        // 🔴 อย่าลืมนำ URL Apps Script ของคุณครูมาใส่ตรงนี้ครับ
         const API_URL = "https://script.google.com/macros/s/AKfycbxDugbtkWAjboT8UU_HinYsE-osH2BBLxxcnk2xVecdYtTGdoLt5dyNqzuZPKGSwDaFog/exec"; 
         
         let allProjects = [];
         let calendarInstance;
-        let chartInstance; // สำหรับ Chart.js
+        let chartInstance; 
 
         const publicHolidays = [
             { title: 'วันขึ้นปีใหม่', start: '2026-01-01', color: '#e74c3c' }, { title: 'วันมาฆบูชา', start: '2026-03-03', color: '#e74c3c' },
@@ -716,20 +665,6 @@
             { group: "รายชื่อบุคลากร", items: ["นางสาวสมใจ จันทรงกรด", "นางสาวพิมลพรรณ ไตรรักษ์", "นายกิตติธัช สีหะวงษ์", "นายพิสันต์ สายโรจน์", "นางสาวนลินี กาศแสวง", "นางสาวศิริวรรณ พานตะสี", "นางสาวนฤมล มะลิเทิน", "นางสาวสุนิสา ชวนยิ้ม", "นายอชิตพล บุณรัตน์", "นายกิตติศักดิ์ รัตนชัย", "นายพรพิพัฒน์ สุทธิธรรม", "นายศรายุทธ แสนเกียง", "นางภัทรหทัย ทองอยู่", "นางสาววรกานต์ อาคม", "นางสาวลลิตา ภู่ประเสริฐ", "นายสมชาติ วิโรจน์พิพัฒน์", "นายสาคร กลิ่นหอม"] }
         ];
 
-        // ฐานข้อมูลตัวชี้วัด (โรงเรียน + สมศ.)
-        const optionData = {
-            school: [
-                { group: "มาตรฐานที่ 1 คุณภาพของผู้เรียน", items: ["ตัวชี้วัดที่ 1.1(1) มีความสามารถในการอ่าน การเขียน การสื่อสาร และการคิดคำนวณ", "ตัวชี้วัดที่ 1.1(2) มีความสามารถในการคิดวิเคราะห์ คิดอย่างมีวิจารณญาณ อภิปรายแลกเปลี่ยนความคิดเห็น และแก้ปัญหา", "ตัวชี้วัดที่ 1.1(3) มีความสามารถในการสร้างนวัตกรรม", "ตัวชี้วัดที่ 1.1(4) มีความสามารถในการใช้เทคโนโลยีสารสนเทศและการสื่อสาร", "ตัวชี้วัดที่ 1.1(5) มีผลสัมฤทธิ์ทางการเรียนตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.1(6) มีความรู้ ทักษะพื้นฐาน และเจตคติที่ดีต่องานอาชีพ", "ตัวชี้วัดที่ 1.2(1) การมีคุณลักษณะและค่านิยมที่ดีตามที่สถานศึกษากำหนด", "ตัวชี้วัดที่ 1.2(2) ความภูมิใจในท้องถิ่นและความเป็นไทย", "ตัวชี้วัดที่ 1.2(3) การยอมรับที่จะอยู่ร่วมกันบนความแตกต่างและหลากหลาย", "ตัวชี้วัดที่ 1.2(4) สุขภาวะทางร่างกาย และจิตสังคม"] },
-                { group: "มาตรฐานที่ 2 กระบวนการบริหารและการจัดการ", items: ["ตัวชี้วัดที่ 2.1 มีเป้าหมายวิสัยทัศน์และพันธกิจที่สถานศึกษากำหนดชัดเจน", "ตัวชี้วัดที่ 2.2 มีระบบบริหารจัดการคุณภาพของสถานศึกษา", "ตัวชี้วัดที่ 2.3 ดำเนินงานพัฒนาวิชาการที่เน้นคุณภาพผู้เรียนรอบด้านตามหลักสูตรสถานศึกษา และทุกกลุ่มเป้าหมาย", "ตัวชี้วัดที่ 2.4 พัฒนาครูและบุคลากรให้มีความเชี่ยวชาญทางวิชาชีพ", "ตัวชี้วัดที่ 2.5 จัดสภาพแวดล้อมทางกายภาพและสังคมที่เอื้อต่อการจัดการเรียนรู้อย่างมีคุณภาพ", "ตัวชี้วัดที่ 2.6 จัดระบบเทคโนโลยีสารสนเทศเพื่อสนับสนุนการบริหารจัดการและการจัดการเรียนรู้"] },
-                { group: "มาตรฐานที่ 3 กระบวนการจัดการเรียนการสอนที่เน้นผู้เรียนเป็นสำคัญ", items: ["ตัวชี้วัดที่ 3.1 จัดการเรียนรู้ผ่านกระบวนการคิดและปฏิบัติจริง และสามารถนำไปประยุกต์ใช้ในชีวิตได้", "ตัวชี้วัดที่ 3.2 ใช้สื่อ เทคโนโลยีสารสนเทศและแหล่งเรียนรู้ที่เอื้อต่อการเรียนรู้", "ตัวชี้วัดที่ 3.3 มีการบริหารจัดการชั้นเรียนเชิงบวก", "ตัวชี้วัดที่ 3.4 ตรวจสอบและประเมินผู้เรียนอย่างเป็นระบบและนำผลมาพัฒนาผู้เรียน", "ตัวชี้วัดที่ 3.5 มีการแลกเปลี่ยนเรียนรู้และให้ข้อมูลสะท้อนกลับเพื่อพัฒนาและปรับปรุงการจัดการเรียนรู้"] }
-            ],
-            onesqa: [
-                { group: "มาตรฐานที่ 1 ผลลัพธ์ของการเรียนรู้", items: ["ตัวชี้วัดที่ 1.1 ผู้เรียนมีสมรรถนะตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.2 ผู้เรียนมีคุณลักษณะที่พึงประสงค์ตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.3 ผู้เรียนสามารถนำตนเองในการเรียนรู้"] },
-                { group: "มาตรฐานที่ 2 การพัฒนาคุณภาพการบริหารจัดการสถานศึกษา", items: ["ตัวชี้วัดที่ 2.1 วิสัยทัศน์ พันธกิจ และค่านิยมของสถานศึกษา", "ตัวชี้วัดที่ 2.2 นโยบาย ทิศทาง กลยุทธ์และแผนงานสอดคล้องกับวิสัยทัศน์และพันธกิจ", "ตัวชี้วัดที่ 2.3 ผู้บริหารสถานศึกษามีภาวะผู้นำทางวิชาการและบริหารจัดการด้วยหลักธรรมาภิบาล", "ตัวชี้วัดที่ 2.4 แผนงานและการดำเนินงานด้านการพัฒนาครูและบุคลากรทางการศึกษา", "ตัวชี้วัดที่ 2.5 กระบวนการนิเทศการปฏิบัติงานของครูและบุคลากรทางการศึกษาอย่างเป็นระบบ", "ตัวชี้วัดที่ 2.6 การใช้สื่อ อุปกรณ์ ระบบเทคโนโลยีเพื่อสนับสนุนการจัดการศึกษา", "ตัวชี้วัดที่ 2.7 การจัดสภาพแวดล้อม อาคารสถานที่ ปลอดภัยและถูกสุขลักษณะ", "ตัวชี้วัดที่ 2.8 สวัสดิการ สวัสดิภาพ แนวทางการป้องกันโรค อุบัติภัย ภัยพิบัติ", "ตัวชี้วัดที่ 2.9 ระบบและกระบวนการช่วยเหลือผู้เรียน", "ตัวชี้วัดที่ 2.10 การเสริมสร้างเครือข่ายผู้ปกครอง องค์กร และชุมชน เพื่อความร่วมมือในการสนับสนุนการจัดการเรียนรู้และพัฒนาผู้เรียน"] },
-                { group: "มาตรฐานที่ 3 การพัฒนาคุณภาพการจัดการเรียนรู้", items: ["ตัวชี้วัดที่ 3.1 การออกแบบหลักสูตรและแผนการจัดการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.2 การจัดกิจกรรมการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.3 ครูวัดและประเมินผลการเรียนรู้ของผู้เรียน อย่างเป็นระบบและต่อเนื่อง"] }
-            ]
-        };
-
         // ================= 1. Login & Roles =================
         function togglePasswordForm() {
             let loginSec = document.getElementById('loginFormSection');
@@ -744,7 +679,6 @@
         function performLogin() {
             let email = document.getElementById('loginEmail').value;
             let password = document.getElementById('loginPassword').value;
-            
             if(!email || !password) { Swal.fire('Error', 'กรุณากรอกอีเมลและรหัสผ่าน', 'error'); return; }
             
             Swal.fire({title: 'กำลังตรวจสอบ...', allowOutsideClick: false}); Swal.showLoading();
@@ -769,13 +703,26 @@
             }).catch(err => Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'));
         }
 
+        // --- ระบบบุคคลทั่วไป (Guest Mode) ---
+        function loginAsGuest() {
+            localStorage.setItem('userEmail', 'Guest');
+            localStorage.setItem('userRole', 'guest');
+            localStorage.setItem('userRoleText', 'บุคคลทั่วไป');
+            localStorage.setItem('userName', 'บุคคลทั่วไป');
+            
+            applyRolePermissions();
+            document.getElementById('loginOverlay').style.display = 'none';
+            Swal.fire({title: 'เข้าสู่ระบบสำเร็จ', text: `เข้าชมในฐานะบุคคลทั่วไป`, icon: 'info', timer: 1500, showConfirmButton: false});
+            
+            populateYears(); loadSettings(); buildCheckboxDropdown('listManager', 'btnManager', managers, 'manager'); reloadPolicyDropdowns(); updateDynamicLabels(); loadProjects();
+        }
+
         function changePassword() {
             let email = document.getElementById('cpEmail').value;
             let oldPass = document.getElementById('cpOldPass').value;
             let newPass = document.getElementById('cpNewPass').value;
             
             if(!email || !oldPass || !newPass) { Swal.fire('Error', 'กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
-            
             Swal.fire({title: 'กำลังดำเนินการ...', allowOutsideClick: false}); Swal.showLoading();
             
             fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'change_password', email: email, oldPassword: oldPass, newPassword: newPass }) })
@@ -784,9 +731,7 @@
                 if(res.status === 'success') {
                     Swal.fire('สำเร็จ', res.message, 'success');
                     togglePasswordForm(); document.getElementById('cpOldPass').value = ''; document.getElementById('cpNewPass').value = '';
-                } else {
-                    Swal.fire('ข้อผิดพลาด', res.message, 'error');
-                }
+                } else { Swal.fire('ข้อผิดพลาด', res.message, 'error'); }
             }).catch(err => Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้', 'error'));
         }
 
@@ -802,12 +747,26 @@
             document.getElementById('reqActUser').value = name;
             document.getElementById('reqBuyUser').value = name;
             
-            if(role === 'plan' || role === 'admin') {
-                document.getElementById('adminMenuSection').style.display = 'block';
-                document.getElementById('nav-settings').style.display = 'block';
-            } else {
+            // ซ่อนเมนูตาม Role
+            if(role === 'guest') {
+                document.getElementById('menu-project-management').style.display = 'none';
+                document.getElementById('menu-approval-system').style.display = 'none';
                 document.getElementById('adminMenuSection').style.display = 'none';
-                document.getElementById('nav-settings').style.display = 'none';
+                
+                // ซ่อนปุ่มจัดการในตาราง
+                document.getElementById('thManageProj').style.display = 'none';
+            } else {
+                document.getElementById('menu-project-management').style.display = 'block';
+                document.getElementById('menu-approval-system').style.display = 'block';
+                document.getElementById('thManageProj').style.display = 'table-cell';
+                
+                if(role === 'plan' || role === 'admin') {
+                    document.getElementById('adminMenuSection').style.display = 'block';
+                    document.getElementById('nav-settings').style.display = 'block';
+                } else {
+                    document.getElementById('adminMenuSection').style.display = 'none';
+                    document.getElementById('nav-settings').style.display = 'none';
+                }
             }
         }
 
@@ -888,20 +847,18 @@
             initCalendar(events);
         }
 
-        // ================= 4. Settings & Policies =================
+        // ================= 4. Settings & Policies Defaults =================
         function loadSettings() {
-            // หัวหน้าฝ่าย
             document.getElementById('setHeadAcademic').value = localStorage.getItem('setHeadAcademic') || "นางสาวเมธาวี อุทัศน์";
             document.getElementById('setHeadGeneral').value = localStorage.getItem('setHeadGeneral') || "นายพิสันต์ สายโรจน์";
             document.getElementById('setHeadHR').value = localStorage.getItem('setHeadHR') || "นางสาวพิมลพรรณ ไตรรักษ์";
             document.getElementById('setHeadBudget').value = localStorage.getItem('setHeadBudget') || "นางสาวสมใจ จันทรงกรด";
 
-            // บริหาร
             document.getElementById('setHeadPlan').value = localStorage.getItem('setHeadPlan') || "นายอชิตพล บุณรัตน์";
             document.getElementById('setDeputy').value = localStorage.getItem('setDeputy') || "นางสาวปทุมวดี วงษ์สุธรรม";
             document.getElementById('setDirector').value = localStorage.getItem('setDirector') || "นายมนูญ บุบผาพ่วง";
             
-            // นโยบาย สพฐ
+            // นโยบายจากเอกสาร
             const defObec = `1. ปลูกฝังความรักในสถาบันหลักของชาติ และน้อมนำพระบรมราโชบายด้านการศึกษาสู่การปฏิบัติ
 1.1 สร้างความรู้ ความเข้าใจในการนำหลักปรัชญาของเศรษฐกิจพอเพียงมาปรับใช้ในสถานศึกษาเพื่อการดำเนินชีวิตอย่างสมดุลและยั่งยืน
 1.2 ส่งเสริม สนับสนุนการจัดกิจกรรมน้อมนำพระบรมราโชบายด้านการศึกษาของในหลวงรัชกาลที่ 10 สู่การปฏิบัติ เพื่อให้ผู้เรียนเป็นคนดี คนเก่ง มีคุณภาพ และสามารถดำรงชีวิตอยู่ในสังคมได้อย่างมีความสุข
@@ -1075,6 +1032,7 @@
         }
 
         function reloadPolicyDropdowns() {
+            // โหลดข้อมูลตัวเลือก checkbox ของนโยบาย
             let arrObec = document.getElementById('setObec').value.split('\n').filter(x => x.trim());
             let arrSpm = document.getElementById('setSpm').value.split('\n').filter(x => x.trim());
             let arrStrategy = document.getElementById('setStrategy').value.split('\n').filter(x => x.trim());
@@ -1129,7 +1087,6 @@
             buildCheckboxDropdown('listTime', 'btnTime', terms, 'time'); 
             updateDropdownText('time', 'btnTime');
             
-            // ปรับ Label ตามชื่อแบบฟอร์มที่ระบุปีเป๊ะๆ
             if(document.getElementById('lblObec')) document.getElementById('lblObec').innerText = `5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
             if(document.getElementById('lblSpm')) document.getElementById('lblSpm').innerText = `6. สนองนโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
             if(document.getElementById('pLblObec')) document.getElementById('pLblObec').innerText = `5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
@@ -1344,13 +1301,13 @@
             let html = `
             <div class="budget-group card p-3 mb-3 border-info shadow-sm" id="${groupId}">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <input type="text" class="form-control bg-group-name fw-bold text-primary w-75" placeholder="ชื่อกลุ่มรายการ (เช่น กิจกรรมที่ 1)" value="${groupName}">
+                    <input type="text" class="form-control bg-group-name fw-bold text-primary w-75" placeholder="ระบุกิจกรรมที่ใช้งบประมาณ..." value="${groupName}">
                     <button class="btn btn-sm btn-outline-danger" onclick="this.closest('.budget-group').remove(); updateGrandTotal();"><i class="fas fa-trash"></i> ลบกลุ่ม</button>
                 </div>
                 <table class="table table-bordered mb-2">
-                    <thead class="table-light text-center"><tr><th width="20%">ประเภทงบ</th><th>รายการ</th><th width="10%">จำนวน</th><th width="15%">ราคา/หน่วย</th><th width="15%">รวม (บาท)</th><th width="5%">ลบ</th></tr></thead>
+                    <thead class="table-light text-center"><tr><th width="15%">ประเภทงบ</th><th>รายการ</th><th>รายละเอียด</th><th width="10%">จำนวน</th><th width="15%">ราคา/หน่วย</th><th width="15%">รวม (บาท)</th><th width="5%">ลบ</th></tr></thead>
                     <tbody class="bg-group-body"></tbody>
-                    <tfoot><tr><td colspan="4" class="text-end fw-bold">รวมกลุ่มรายการนี้</td><td><input type="number" class="form-control bg-group-total fw-bold text-primary" readonly value="0"></td><td></td></tr></tfoot>
+                    <tfoot><tr><td colspan="5" class="text-end fw-bold">รวมกลุ่มนี้</td><td><input type="number" class="form-control bg-group-total fw-bold text-primary" readonly value="0"></td><td></td></tr></tfoot>
                 </table>
                 <div><button class="btn btn-sm btn-success" onclick="addBudgetRowTo('${groupId}')">+ เพิ่มรายการซื้อในกลุ่มนี้</button></div>
             </div>`;
@@ -1358,11 +1315,12 @@
             return groupId;
         }
 
-        function addBudgetRowTo(groupId, type="ค่าวัสดุ", item="", qty="", price="", total="") {
+        function addBudgetRowTo(groupId, type="ค่าวัสดุ", item="", desc="", qty="", price="", total="") {
             let tbody = document.querySelector(`#${groupId} .bg-group-body`);
             let tr = `<tr>
                 <td><select class="form-select bg-type"><option value="ค่าตอบแทน" ${type==='ค่าตอบแทน'?'selected':''}>ค่าตอบแทน</option><option value="ค่าใช้สอย" ${type==='ค่าใช้สอย'?'selected':''}>ค่าใช้สอย</option><option value="ค่าวัสดุ" ${type==='ค่าวัสดุ'?'selected':''}>ค่าวัสดุ</option><option value="ค่าครุภัณฑ์" ${type==='ค่าครุภัณฑ์'?'selected':''}>ค่าครุภัณฑ์</option><option value="อื่นๆ" ${type==='อื่นๆ'?'selected':''}>อื่นๆ</option></select></td>
-                <td><input type="text" class="form-control bg-item" value="${item}"></td>
+                <td><input type="text" class="form-control bg-item" placeholder="ชื่อของ/บริการ" value="${item}"></td>
+                <td><input type="text" class="form-control bg-desc" placeholder="คำอธิบายเพิ่มเติม" value="${desc}"></td>
                 <td><input type="number" class="form-control bg-qty" onkeyup="calcBudget(this)" value="${qty}"></td>
                 <td><input type="number" class="form-control bg-price" onkeyup="calcBudget(this)" value="${price}"></td>
                 <td><input type="number" class="form-control bg-total" readonly value="${total}"></td>
@@ -1420,7 +1378,7 @@
             addActRow(); addListRow('objBody', 'เพื่อ...'); addListRow('goalQunBody', 'ร้อยละ/จำนวน...'); addListRow('goalQualBody', 'คุณภาพ/ความพึงพอใจ...'); addKpiRow(); addRiskRow(); addCalRow(); 
             generatePDCATables(); 
             
-            let gId = addBudgetGroup("รายการที่ 1"); addBudgetRowTo(gId);
+            let gId = addBudgetGroup("กิจกรรมที่ 1..."); addBudgetRowTo(gId);
             document.getElementById('fConsent').checked = false; document.getElementById('sigPreview').style.display = 'none'; document.getElementById('fSigBase64').value = "";
         }
 
@@ -1434,16 +1392,22 @@
                     filtered = allProjects.filter(p => p.year == year);
                 }
                 let html = "";
+                let role = localStorage.getItem('userRole');
+                
                 filtered.forEach(p => {
+                    let manageBtn = "";
+                    if(role !== 'guest') {
+                        manageBtn = `<td>
+                            <button class="btn btn-sm btn-warning" onclick="editProject('${p.id}')">แก้ไข</button> 
+                            <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">ลบ</button>
+                        </td>`;
+                    }
                     html += `<tr>
                         <td>${p.year}</td>
                         <td class="text-start">${p.projectName}</td>
                         <td>${(p.manager||[]).join(', ')}</td>
                         <td><button class="btn btn-sm btn-outline-info" onclick="viewProjectDetails('${p.id}')"><i class="fas fa-eye"></i> ดูรายละเอียด</button></td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" onclick="editProject('${p.id}')">แก้ไข</button> 
-                            <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">ลบ</button>
-                        </td>
+                        ${manageBtn}
                     </tr>`;
                 });
                 document.getElementById('projectTableBody').innerHTML = html || `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
@@ -1476,7 +1440,7 @@
             }
             document.getElementById('pdActivities').innerHTML = actsHtml;
 
-            // วาดกราฟ
+            // วาดกราฟ Chart.js
             if(chartInstance) { chartInstance.destroy(); }
             let ctx = document.getElementById('budgetChart').getContext('2d');
             chartInstance = new Chart(ctx, {
@@ -1492,9 +1456,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
+                    plugins: { legend: { position: 'bottom' } }
                 }
             });
 
@@ -1528,7 +1490,8 @@
             document.querySelectorAll('.budget-group').forEach(grp => {
                 let items = [];
                 grp.querySelectorAll('.bg-group-body tr').forEach(tr => {
-                    items.push({ type: tr.querySelector('.bg-type').value, item: tr.querySelector('.bg-item').value, qty: tr.querySelector('.bg-qty').value, price: tr.querySelector('.bg-price').value, total: tr.querySelector('.bg-total').value });
+                    let descVal = tr.querySelector('.bg-desc') ? tr.querySelector('.bg-desc').value : "";
+                    items.push({ type: tr.querySelector('.bg-type').value, item: tr.querySelector('.bg-item').value, desc: descVal, qty: tr.querySelector('.bg-qty').value, price: tr.querySelector('.bg-price').value, total: tr.querySelector('.bg-total').value });
                 });
                 budgets.push({ groupName: grp.querySelector('.bg-group-name').value, items: items, groupTotal: grp.querySelector('.bg-group-total').value });
             });
@@ -1574,9 +1537,15 @@
 
             if(p.budgetDetails && p.budgetDetails.length > 0) {
                 if(p.budgetDetails[0].groupName !== undefined) {
-                    p.budgetDetails.forEach(grp => { let gId = addBudgetGroup(grp.groupName); grp.items.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.qty, i.price, i.total)); updateGroupTotal(document.getElementById(gId)); });
+                    p.budgetDetails.forEach(grp => { 
+                        let gId = addBudgetGroup(grp.groupName); 
+                        grp.items.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.desc || "", i.qty, i.price, i.total)); 
+                        updateGroupTotal(document.getElementById(gId)); 
+                    });
                 } else {
-                    let gId = addBudgetGroup("รายการงบประมาณ"); p.budgetDetails.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.qty, i.price, i.total)); updateGroupTotal(document.getElementById(gId));
+                    let gId = addBudgetGroup("รายการงบประมาณ"); 
+                    p.budgetDetails.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.desc || "", i.qty, i.price, i.total)); 
+                    updateGroupTotal(document.getElementById(gId));
                 }
             } else { let gId = addBudgetGroup("รายการที่ 1"); addBudgetRowTo(gId); }
             
@@ -1612,7 +1581,6 @@
             updateQuarterAlert();
             let year = document.getElementById('filterBudgetYear').value;
             
-            // เพิ่มการตรวจสอบปี หากเลือก "all" ไม่ต้อง filter ปี
             let filtered = allProjects;
             if(year !== 'all') {
                 filtered = allProjects.filter(p => p.year == year);
@@ -1628,7 +1596,13 @@
                 let percent = budget > 0 ? ((expense / budget) * 100).toFixed(2) : 0;
                 sumTotal += budget; sumExpense += expense;
                 
-                let bgSrcArr = p.generalInfo.bgSrc || []; let sources = [];
+                let bgSrcArr = p.generalInfo.bgSrc || []; 
+                
+                // คำนวณแยกปี
+                let bgCurrent = Number(bgSrcArr[0]||0) + Number(bgSrcArr[2]||0) + Number(bgSrcArr[4]||0) + Number(bgSrcArr[6]||0);
+                let bgPrevious = Number(bgSrcArr[1]||0) + Number(bgSrcArr[3]||0);
+
+                let sources = [];
                 if(Number(bgSrcArr[0]) > 0 || Number(bgSrcArr[1]) > 0) sources.push("อุดหนุนรายหัว");
                 if(Number(bgSrcArr[2]) > 0 || Number(bgSrcArr[3]) > 0) sources.push("กิจกรรมพัฒนาคุณภาพผู้เรียน");
                 if(Number(bgSrcArr[4]) > 0) sources.push("รายได้สถานศึกษา");
@@ -1638,23 +1612,29 @@
 
                 html += `<tr>
                     <td class="text-start">${p.projectName} ${year==='all'?`<br><small class="text-muted">(ปี ${p.year})</small>`:''}</td>
-                    <td class="text-start" style="font-size: 0.9em;">${(p.manager||[]).join('<br>')}</td>
                     <td style="font-size: 0.9em;">${sources.join('<br>') || "-"}</td>
-                    <td class="text-end text-primary">${budget.toLocaleString('th-TH')}</td>
-                    <td class="text-end text-danger">${expense.toLocaleString('th-TH')}</td>
-                    <td class="text-end text-success">${remain.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-secondary">${bgCurrent.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-secondary">${bgPrevious.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-primary fw-bold">${budget.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-danger fw-bold">${expense.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-success fw-bold">${remain.toLocaleString('th-TH')}</td>
                     <td><div class="progress" style="height: 20px;"><div class="progress-bar ${pbColor}" role="progressbar" style="width: ${percent}%;">${percent}%</div></div></td>
                     <td><button class="btn btn-sm btn-outline-primary" onclick="openExpenseModal('${p.id}')"><i class="fas fa-search"></i> ดู/เบิก</button></td>
                 </tr>`;
             });
             
-            document.getElementById('budgetTableBody').innerHTML = html || `<tr><td colspan="8" class="text-center">ไม่มีข้อมูล</td></tr>`;
+            document.getElementById('budgetTableBody').innerHTML = html || `<tr><td colspan="9" class="text-center">ไม่มีข้อมูล</td></tr>`;
             document.getElementById('sumTotalBudget').innerText = sumTotal.toLocaleString('th-TH', {minimumFractionDigits: 2}); 
             document.getElementById('sumTotalExpense').innerText = sumExpense.toLocaleString('th-TH', {minimumFractionDigits: 2}); 
             document.getElementById('sumTotalRemain').innerText = (sumTotal - sumExpense).toLocaleString('th-TH', {minimumFractionDigits: 2});
         }
 
         function openExpenseModal(id) {
+            let role = localStorage.getItem('userRole');
+            if(role === 'guest') {
+                Swal.fire('แจ้งเตือน', 'บุคคลทั่วไปสามารถดูข้อมูลได้ในตารางเท่านั้น', 'info'); return;
+            }
+
             let p = allProjects.find(x => x.id === id); if(!p) return;
             document.getElementById('mdlProjectId').value = id; 
             document.getElementById('expenseModalTitle').innerText = "การเบิกจ่าย: " + p.projectName;
@@ -1697,94 +1677,6 @@
                     fetch(API_URL, { method: "POST", body: JSON.stringify(data) }).then(res => res.json()).then(res => { Swal.fire('สำเร็จ', res.message, 'success'); loadProjects(); openExpenseModal(p.id); });
                 }
             });
-        }
-
-        // ================= 10. Print Project =================
-        function printProject() {
-            document.getElementById('pYear').innerText = document.getElementById('fYear').value; 
-            document.getElementById('pName').innerText = document.getElementById('fName').value; 
-            document.getElementById('pDept').innerText = document.getElementById('fDept').value; 
-            document.getElementById('pSubDept').innerText = document.getElementById('fSubDept').value; 
-            
-            const liHTML = arr => (arr || []).map(v => `<li>${v}</li>`).join('');
-            
-            document.getElementById('pActivities').innerHTML = getActivities().map(a => `<li>${a.name} ${a.manager? '(ผู้รับผิดชอบ: '+a.manager+')':''}</li>`).join('');
-            document.getElementById('pManager').innerHTML = liHTML(getCheckedValues('manager'));
-            document.getElementById('pSigManager').innerText = (getCheckedValues('manager') || [])[0] || "......................................................"; 
-            
-            let sigBase64 = document.getElementById('fSigBase64').value;
-            if(sigBase64) { document.getElementById('pSigImage').src = sigBase64; document.getElementById('pSigImage').style.display = 'inline'; }
-            else { document.getElementById('pSigImage').style.display = 'none'; }
-
-            document.getElementById('pTime').innerHTML = liHTML(getCheckedValues('time'));
-            document.getElementById('pProjType').innerHTML = document.getElementById('fProjType').value === 'โครงการใหม่' ? '( / ) โครงการใหม่ &nbsp;&nbsp; (  ) โครงการต่อเนื่อง' : '(  ) โครงการใหม่ &nbsp;&nbsp; ( / ) โครงการต่อเนื่อง';
-
-            ['StdSchool', 'StdOnesqa', 'StdObec', 'StdSpm', 'StdStrategy'].forEach(id => { let attr = id.charAt(0).toLowerCase() + id.slice(1); document.getElementById('p'+id).innerHTML = liHTML(getCheckedValues(attr)); });
-
-            document.getElementById('pReason').innerText = document.getElementById('fReason').value;
-            document.getElementById('pTarget').innerText = document.getElementById('fTarget').value;
-            document.getElementById('pObj').innerHTML = liHTML(getListData('objBody'));
-            document.getElementById('pGoalQun').innerHTML = liHTML(getListData('goalQunBody'));
-            document.getElementById('pGoalQual').innerHTML = liHTML(getListData('goalQualBody'));
-
-            document.getElementById('pTotalBudget').innerText = Number(document.getElementById('fTotalBudget').value).toLocaleString('th-TH');
-            
-            let year = parseInt(document.getElementById('fYear').value) || 2570;
-            document.getElementById('pBgSrcTable').innerHTML = `<tr><th>แหล่งที่มา</th><th>จำนวน (บาท)</th></tr>
-            <tr><td>เงินอุดหนุนรายหัว ปี ${year}</td><td>${Number($('#fBgSrc1').val()).toLocaleString()}</td></tr>
-            <tr><td>เงินอุดหนุนรายหัว ปี ${year-1}</td><td>${Number($('#fBgSrc2').val()).toLocaleString()}</td></tr>
-            <tr><td>เงินกิจกรรมพัฒนาคุณภาพผู้เรียน ปี ${year}</td><td>${Number($('#fBgSrc3').val()).toLocaleString()}</td></tr>
-            <tr><td>เงินรายได้สถานศึกษา</td><td>${Number($('#fBgSrc4').val()).toLocaleString()}</td></tr>
-            <tr><td>อื่นๆ ${$('#fBgSrc6Name').val()}</td><td>${Number($('#fBgSrc6').val()).toLocaleString()}</td></tr>`;
-
-            let calHtml = "<tr><th>รายการ</th><th>วันที่</th><th>จำนวนวัน</th></tr>"; 
-            document.querySelectorAll('#calBody tr').forEach(tr => { let t = tr.querySelector('.cal-task').value; let s = tr.querySelector('.cal-start').value; let e = tr.querySelector('.cal-end').value; let d = tr.querySelector('.cal-days').value; if(t) calHtml += `<tr><td>${t}</td><td style="text-align:center;">${s} ถึง ${e}</td><td style="text-align:center;">${d}</td></tr>`; }); 
-            document.getElementById('pCalTable').innerHTML = calHtml;
-            
-            let pdcaHtml = "";
-            document.querySelectorAll('.pdca-group').forEach((grp, idx) => {
-                pdcaHtml += `<tr><td colspan="4" style="background:#e9ecef; font-weight:bold;">กิจกรรมที่ ${idx+1}: ${grp.getAttribute('data-act')}</td></tr><tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส</th><th>งบประมาณ</th></tr>`;
-                grp.querySelectorAll('tbody tr').forEach(tr => {
-                    let p = tr.querySelector('.pdca-phase').value; let t = tr.querySelector('.pdca-task').value; 
-                    let qId = tr.querySelector('.pdca-quarter-container button').id; let q = (getCheckedValues(qId)||[]).join(', '); 
-                    let b = tr.querySelector('.pdca-budget').value; 
-                    if(t) pdcaHtml += `<tr><td>${p}</td><td style="white-space:pre-line;">${t}</td><td style="text-align:center;">${q}</td><td style="text-align:center;">${Number(b).toLocaleString()}</td></tr>`;
-                });
-            });
-            document.getElementById('pPDCAContainer').innerHTML = `<table class="print-table">${pdcaHtml}</table>`;
-
-            let bgHtml = "<tr><th>ประเภท</th><th>รายการ</th><th>จำนวน</th><th>ราคา/หน่วย</th><th>รวม(บาท)</th></tr>"; 
-            document.querySelectorAll('.budget-group').forEach(grp => {
-                let grpName = grp.querySelector('.bg-group-name').value;
-                let grpTotal = grp.querySelector('.bg-group-total').value;
-                if(grpName) bgHtml += `<tr><td colspan="5" style="background:#e9ecef; font-weight:bold; text-align:left;">${grpName}</td></tr>`;
-                grp.querySelectorAll('.bg-group-body tr').forEach(tr => { let ty = tr.querySelector('.bg-type').value; let i = tr.querySelector('.bg-item').value; let q = tr.querySelector('.bg-qty').value; let p = tr.querySelector('.bg-price').value; let t = tr.querySelector('.bg-total').value; if(i) bgHtml += `<tr><td>${ty}</td><td>${i}</td><td style="text-align:center;">${q}</td><td style="text-align:right;">${Number(p).toLocaleString()}</td><td style="text-align:right;">${Number(t).toLocaleString()}</td></tr>`; });
-                if(grpName) bgHtml += `<tr><td colspan="4" style="text-align:right; font-weight:bold;">รวม ${grpName}</td><td style="text-align:right; font-weight:bold;">${Number(grpTotal).toLocaleString()}</td></tr>`;
-            });
-            document.getElementById('pBudgetTable').innerHTML = bgHtml;
-            
-            let kpiHtml = "<tr><th>ประเภท</th><th>ตัวชี้วัดความสำเร็จ</th><th>วิธีประเมิน</th><th>เครื่องมือที่ใช้</th></tr>"; 
-            document.querySelectorAll('#kpiBody tr').forEach(tr => { let ty = tr.querySelector('.kpi-type').value; let i = tr.querySelector('.kpi-ind').value; let m = tr.querySelector('.kpi-met').value; let t = tr.querySelector('.kpi-tool').value; if(i) kpiHtml += `<tr><td>${ty}</td><td>${i}</td><td>${m}</td><td>${t}</td></tr>`; }); 
-            document.getElementById('pKpiTable').innerHTML = kpiHtml;
-            
-            let riskHtml = "<tr><th>ปัจจัยความเสี่ยง</th><th>แนวทางบริหารความเสี่ยง</th></tr>"; 
-            document.querySelectorAll('.risk-row').forEach(tr => { let f = tr.querySelector('.r-factor').value; let s = tr.querySelector('.r-sol').value; if(f) riskHtml += `<tr><td>${f}</td><td>${s}</td></tr>`; }); 
-            document.getElementById('pRiskTable').innerHTML = riskHtml;
-
-            // ตั้งค่าลายเซ็นหัวหน้ากลุ่มบริหาร
-            let dept = document.getElementById('fDept').value; let headDeptName = "";
-            if (dept === "วิชาการ") headDeptName = document.getElementById('setHeadAcademic').value || "......................................................";
-            else if (dept === "บริหารงานทั่วไป") headDeptName = document.getElementById('setHeadGeneral').value || "......................................................";
-            else if (dept === "บริหารงานบุคคล") headDeptName = document.getElementById('setHeadHR').value || "......................................................";
-            else if (dept === "งบประมาณและสินทรัพย์") headDeptName = document.getElementById('setHeadBudget').value || "......................................................";
-            
-            document.getElementById('pSigHeadDept').innerText = headDeptName;
-            document.getElementById('pSigDeptName').innerText = "กลุ่มบริหารงาน" + dept;
-            document.getElementById('pSigPlan').innerText = document.getElementById('setHeadPlan').value || "......................................................";
-            document.getElementById('pSigDeputy').innerText = document.getElementById('setDeputy').value || "......................................................";
-            document.getElementById('pSigDirector').innerText = document.getElementById('setDirector').value || "......................................................";
-
-            window.print();
         }
     </script>
 </body>
