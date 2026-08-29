@@ -78,6 +78,7 @@
         <nav class="nav flex-column">
             <a class="nav-link active" id="nav-dashboard" href="#" onclick="showPage('dashboard')"><i class="fas fa-home me-2"></i> หน้าหลัก</a>
             <a class="nav-link" id="nav-list" href="#" onclick="showPage('projectList')"><i class="fas fa-list me-2"></i> รายการโครงการ</a>
+            <a class="nav-link" id="nav-budget" href="#" onclick="showPage('budget')"><i class="fas fa-chart-line me-2"></i> ติดตามงบประมาณ</a>
             <a class="nav-link" id="nav-form" href="#" onclick="openForm()"><i class="fas fa-pen-fancy me-2"></i> ร่างโครงการ (ผง.01)</a>
             <hr>
             <a class="nav-link text-muted" id="nav-settings" href="#" onclick="showPage('settings')"><i class="fas fa-cog me-2"></i> ตั้งค่าระบบ</a>
@@ -86,10 +87,75 @@
 
     <div class="main-content no-print">
         
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD (ปฏิทินภาพรวม) -->
         <div id="page-dashboard">
             <h3 class="mb-4 fw-bold">ภาพรวมแผนปฏิบัติการ</h3>
             <div class="card-3d p-4"><div id="calendar" style="height: 500px;"></div></div>
+        </div>
+
+        <!-- BUDGET TRACKING DASHBOARD -->
+        <div id="page-budget" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold">📊 ติดตามความคืบหน้าการใช้งบประมาณ</h3>
+            </div>
+            
+            <div class="card-3d p-4">
+                <div class="d-flex justify-content-between mb-4">
+                    <div class="w-25">
+                        <label class="form-label text-muted mb-1">เลือกปีงบประมาณ</label>
+                        <select id="filterBudgetYear" class="form-select" onchange="loadProjects()">
+                            <option value="2569">พ.ศ. 2569</option>
+                            <option value="2570" selected>พ.ศ. 2570</option>
+                            <option value="2571">พ.ศ. 2571</option>
+                        </select>
+                    </div>
+                    <div class="align-self-end">
+                        <button class="btn btn-3d btn-blue px-4" onclick="loadProjects()"><i class="fas fa-sync"></i> อัปเดตข้อมูล</button>
+                    </div>
+                </div>
+                
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white p-3 border-0 shadow-sm" style="border-radius: 15px;">
+                            <h5>งบประมาณทั้งหมด</h5>
+                            <h3 id="sumTotalBudget">0.00</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-danger text-white p-3 border-0 shadow-sm" style="border-radius: 15px;">
+                            <h5>รายจ่ายรวม</h5>
+                            <h3 id="sumTotalExpense">0.00</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white p-3 border-0 shadow-sm" style="border-radius: 15px;">
+                            <h5>คงเหลือรวม</h5>
+                            <h3 id="sumTotalRemain">0.00</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="20%">โครงการ</th>
+                                <th width="15%">ผู้รับผิดชอบ</th>
+                                <th width="15%">แหล่งงบประมาณ</th>
+                                <th>งบประมาณ</th>
+                                <th>รายจ่าย</th>
+                                <th>คงเหลือ</th>
+                                <th>ใช้ไปแล้ว (%)</th>
+                                <th width="10%">รายละเอียด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budgetTableBody">
+                            <tr><td colspan="8" class="text-center">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- SETTINGS -->
@@ -194,6 +260,7 @@
                                 <select id="fProjType" class="form-select"><option value="โครงการต่อเนื่อง">โครงการต่อเนื่อง</option><option value="โครงการใหม่">โครงการใหม่</option></select>
                             </div>
                             
+                            <!-- Custom Checkbox Dropdown: ผู้รับผิดชอบ -->
                             <div class="col-md-6">
                                 <label class="form-label">9. ผู้รับผิดชอบ (เลือกได้หลายคน หรือกลุ่มงาน)</label>
                                 <div class="dropdown">
@@ -290,7 +357,7 @@
                             <div class="col-md-12"><label class="form-label font-weight-bold text-danger fs-5">รวมงบประมาณทั้งหมด : <span id="txtTotalBudget">0</span> บาท</label><input type="hidden" id="fTotalBudget"></div>
                         </div>
 
-                        <label class="form-label d-flex justify-content-between text-primary fs-5"><span>10. รายละเอียดการใช้งบประมาณ (แบ่งตามกิจกรรม)</span><button class="btn btn-sm btn-primary" onclick="addBudgetGroup()">+ เพิ่มกลุ่มรายการ (เช่น กิจกรรมที่ 1)</button></label>
+                        <label class="form-label d-flex justify-content-between text-primary fs-5"><span>10. รายละเอียดการใช้งบประมาณ (แบ่งตามกิจกรรม)</span><button class="btn btn-sm btn-primary" onclick="addBudgetGroup()">+ เพิ่มกลุ่มรายการ</button></label>
                         <div id="budgetGroupsContainer"></div>
 
                         <hr>
@@ -316,6 +383,45 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ================= Modal: ดู/เบิกจ่ายงบประมาณ ================= -->
+    <div class="modal fade" id="expenseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border-radius: 15px;">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold text-primary" id="expenseModalTitle">รายละเอียดการเบิกจ่าย</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-4 border-end"><b>งบประมาณทั้งหมด:</b> <br><span id="mdlBudget" class="text-primary fs-4 fw-bold">0</span></div>
+                        <div class="col-4 border-end"><b>เบิกจ่ายไปแล้ว:</b> <br><span id="mdlExpense" class="text-danger fs-4 fw-bold">0</span></div>
+                        <div class="col-4"><b>คงเหลือ:</b> <br><span id="mdlRemain" class="text-success fs-4 fw-bold">0</span></div>
+                    </div>
+                    
+                    <hr>
+                    <h6 class="fw-bold text-secondary">ประวัติการเบิกจ่าย</h6>
+                    <div class="table-responsive" style="max-height: 250px;">
+                        <table class="table table-sm table-hover table-bordered text-center align-middle">
+                            <thead class="table-light sticky-top"><tr><th>วันที่</th><th>รายการเบิกจ่าย</th><th>จำนวนเงิน</th><th>ลบ</th></tr></thead>
+                            <tbody id="expenseHistoryBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-light p-3 mt-3 shadow-sm border border-info" style="border-radius: 10px;">
+                        <h6 class="fw-bold text-primary"><i class="fas fa-plus-circle"></i> บันทึกรายการเบิกจ่ายใหม่</h6>
+                        <input type="hidden" id="mdlProjectId">
+                        <div class="row g-2">
+                            <div class="col-md-3"><input type="date" class="form-control" id="mdlExpDate"></div>
+                            <div class="col-md-5"><input type="text" class="form-control" id="mdlExpItem" placeholder="คำอธิบาย / เลขที่ใบเสร็จ"></div>
+                            <div class="col-md-3"><input type="number" class="form-control" id="mdlExpAmount" placeholder="จำนวนเงิน"></div>
+                            <div class="col-md-1"><button class="btn btn-success w-100 shadow-sm" onclick="addExpense()"><i class="fas fa-check"></i></button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ================= A4 Print Layout ================= -->
@@ -462,7 +568,6 @@
             buildCheckboxDropdown('listStdStrategy', 'btnStdStrategy', [{ group: "กลยุทธ์โรงเรียน", items: arrStrategy }], 'stdStrategy');
         }
 
-        // ================= Custom Checkbox Generator =================
         function buildCheckboxDropdown(listId, btnId, dataArr, nameAttr) {
             let html = ""; let idx = 0;
             dataArr.forEach(group => {
@@ -530,16 +635,121 @@
             calendar.render();
         }
 
-        // ================= Navigation =================
+        // ================= Navigation (Fixed Bug) =================
         function showPage(pageId) {
-            ['dashboard', 'projectList', 'form', 'settings'].forEach(id => document.getElementById('page-' + id).style.display = 'none');
+            ['dashboard', 'projectList', 'budget', 'form', 'settings'].forEach(id => {
+                let el = document.getElementById('page-' + id);
+                if(el) el.style.display = 'none';
+            });
             document.getElementById('page-' + pageId).style.display = 'block';
             
             document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
             if(pageId === 'dashboard') document.getElementById('nav-dashboard').classList.add('active');
             if(pageId === 'projectList') document.getElementById('nav-list').classList.add('active');
+            if(pageId === 'budget') { document.getElementById('nav-budget').classList.add('active'); loadBudgetTracking(); }
             if(pageId === 'form') document.getElementById('nav-form').classList.add('active');
             if(pageId === 'settings') document.getElementById('nav-settings').classList.add('active');
+        }
+
+        // ================= Budget Tracking (Dashboard) =================
+        function loadBudgetTracking() {
+            let year = document.getElementById('filterBudgetYear').value;
+            let filtered = allProjects.filter(p => p.year == year);
+            let sumTotal = 0; let sumExpense = 0; let html = "";
+            
+            filtered.forEach(p => {
+                let budget = Number(p.budgetTotal) || 0;
+                let expensesArr = p.generalInfo.expenses || [];
+                let expense = expensesArr.reduce((sum, val) => sum + Number(val.amount), 0);
+                let remain = budget - expense;
+                let percent = budget > 0 ? ((expense / budget) * 100).toFixed(2) : 0;
+                
+                sumTotal += budget; sumExpense += expense;
+                
+                let bgSrcArr = p.generalInfo.bgSrc || [];
+                let sources = [];
+                if(Number(bgSrcArr[0]) > 0 || Number(bgSrcArr[1]) > 0) sources.push("อุดหนุนรายหัว");
+                if(Number(bgSrcArr[2]) > 0 || Number(bgSrcArr[3]) > 0) sources.push("กิจกรรมพัฒนาผู้เรียน");
+                if(Number(bgSrcArr[4]) > 0) sources.push("รายได้สถานศึกษา");
+                if(Number(bgSrcArr[6]) > 0) sources.push(bgSrcArr[5] || "อื่นๆ");
+                let sourcesStr = sources.join('<br>') || "-";
+
+                let pbColor = percent > 80 ? 'bg-danger' : (percent > 50 ? 'bg-warning' : 'bg-success');
+
+                html += `<tr>
+                    <td class="text-start">${p.projectName}</td>
+                    <td class="text-start" style="font-size: 0.9em;">${(p.manager||[]).join('<br>')}</td>
+                    <td style="font-size: 0.9em;">${sourcesStr}</td>
+                    <td class="text-end text-primary">${budget.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-danger">${expense.toLocaleString('th-TH')}</td>
+                    <td class="text-end text-success">${remain.toLocaleString('th-TH')}</td>
+                    <td><div class="progress" style="height: 20px;"><div class="progress-bar ${pbColor}" role="progressbar" style="width: ${percent}%;">${percent}%</div></div></td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick="openExpenseModal('${p.id}')"><i class="fas fa-search"></i> ดู/เบิก</button></td>
+                </tr>`;
+            });
+            
+            document.getElementById('budgetTableBody').innerHTML = html || `<tr><td colspan="8" class="text-center">ไม่มีข้อมูล</td></tr>`;
+            document.getElementById('sumTotalBudget').innerText = sumTotal.toLocaleString('th-TH', {minimumFractionDigits: 2});
+            document.getElementById('sumTotalExpense').innerText = sumExpense.toLocaleString('th-TH', {minimumFractionDigits: 2});
+            document.getElementById('sumTotalRemain').innerText = (sumTotal - sumExpense).toLocaleString('th-TH', {minimumFractionDigits: 2});
+        }
+
+        function openExpenseModal(id) {
+            let p = allProjects.find(x => x.id === id); if(!p) return;
+            document.getElementById('mdlProjectId').value = id;
+            document.getElementById('expenseModalTitle').innerText = "การเบิกจ่าย: " + p.projectName;
+            
+            let budget = Number(p.budgetTotal) || 0;
+            let expensesArr = p.generalInfo.expenses || [];
+            let expense = expensesArr.reduce((sum, val) => sum + Number(val.amount), 0);
+            
+            document.getElementById('mdlBudget').innerText = budget.toLocaleString('th-TH');
+            document.getElementById('mdlExpense').innerText = expense.toLocaleString('th-TH');
+            document.getElementById('mdlRemain').innerText = (budget - expense).toLocaleString('th-TH');
+            
+            let histHtml = "";
+            expensesArr.forEach((exp, idx) => {
+                histHtml += `<tr><td>${exp.date}</td><td class="text-start">${exp.item}</td><td class="text-end">${Number(exp.amount).toLocaleString('th-TH')}</td><td><button class="btn btn-sm btn-danger" onclick="deleteExpense('${id}', ${idx})"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('expenseHistoryBody').innerHTML = histHtml || `<tr><td colspan="4" class="text-center text-muted">ยังไม่มีประวัติการเบิกจ่าย</td></tr>`;
+            
+            document.getElementById('mdlExpDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('mdlExpItem').value = ""; document.getElementById('mdlExpAmount').value = "";
+            
+            new bootstrap.Modal(document.getElementById('expenseModal')).show();
+        }
+
+        function addExpense() {
+            let id = document.getElementById('mdlProjectId').value;
+            let p = allProjects.find(x => x.id === id);
+            let date = document.getElementById('mdlExpDate').value;
+            let item = document.getElementById('mdlExpItem').value;
+            let amount = document.getElementById('mdlExpAmount').value;
+            
+            if(!date || !item || !amount) { Swal.fire('ข้อผิดพลาด', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'error'); return; }
+            if(!p.generalInfo.expenses) p.generalInfo.expenses = [];
+            p.generalInfo.expenses.push({ date: date, item: item, amount: Number(amount) });
+            saveProjectData(p, true);
+        }
+
+        function deleteExpense(id, idx) {
+            Swal.fire({ title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true }).then((result) => {
+                if (result.isConfirmed) {
+                    let p = allProjects.find(x => x.id === id);
+                    p.generalInfo.expenses.splice(idx, 1);
+                    saveProjectData(p, true);
+                }
+            });
+        }
+
+        function saveProjectData(p, isFromModal = false) {
+            const data = { action: "save", id: p.id, year: p.year, projectName: p.projectName, department: p.department, subDept: p.subDept, projType: p.projType, manager: p.manager, time: p.time, budgetTotal: p.budgetTotal, generalInfo: p.generalInfo, pdca: p.pdca, budgetDetails: p.budgetDetails };
+            Swal.fire({title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false}); Swal.showLoading();
+            fetch(API_URL, { method: "POST", body: JSON.stringify(data) }).then(res => res.json()).then(res => { 
+                Swal.fire('สำเร็จ', res.message, 'success'); 
+                loadProjects(); 
+                if(isFromModal) openExpenseModal(p.id);
+            });
         }
 
         // ================= Dynamic Elements =================
@@ -572,7 +782,7 @@
             }
         }
 
-        // ================= PDCA Tables (แบ่งตามกิจกรรม) =================
+        // ================= PDCA Tables =================
         function generatePDCATables() {
             let acts = getActivities();
             let container = document.getElementById('pdcaContainer');
@@ -608,7 +818,7 @@
             if(qArr && qArr.length > 0) setCheckedValues(idBtn, idBtn, qArr);
         }
 
-        // ================= Budget Tables (แบ่งตามกิจกรรม) =================
+        // ================= Budget Tables =================
         function addBudgetGroup(groupName = "") {
             let groupId = 'bg-grp-' + Math.random().toString(36).substr(2, 9);
             let html = `
@@ -646,7 +856,7 @@
             }
         }
 
-        // ================= API Operations =================
+        // ================= Operations =================
         const defReason = `โครงการ..........................................มีความจำเป็นเพื่อ..........................................................................\n....................................................................................................................................................................................\nด้วยเหตุนี้ การจัดทำโครงการนี้จึงมีความสำคัญและจำเป็นอย่างยิ่ง เพื่อให้โรงเรียนวังโพรงพิทยาคมสามารถ.......................................................................................................................................................................`;
         
         function openForm() {
@@ -674,11 +884,19 @@
                 allProjects = result.data; let year = document.getElementById('filterYear').value; let filtered = allProjects.filter(p => p.year == year); let html = "";
                 filtered.forEach(p => { html += `<tr><td>${p.year}</td><td>${p.projectName}</td><td>${(p.manager||[]).join(', ')}</td><td><button class="btn btn-sm btn-warning" onclick="editProject('${p.id}')">แก้ไข</button> <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">ลบ</button></td></tr>`; });
                 document.getElementById('projectTableBody').innerHTML = html || `<tr><td colspan="4" class="text-center">ไม่มีข้อมูล</td></tr>`;
+                loadBudgetTracking(); // Load Budget Dashboard Data
             });
         }
 
         function saveProject() {
             if(!document.getElementById('fConsent').checked) { Swal.fire('แจ้งเตือน', 'กรุณากดยอมรับการเผยแพร่ข้อมูลก่อนบันทึก', 'warning'); return; }
+
+            // ดึงประวัติเบิกจ่ายเดิมมาเก็บไว้เพื่อไม่ให้โดนทับ
+            let existingExpenses = [];
+            if(document.getElementById('formId').value) {
+                let p = allProjects.find(x => x.id === document.getElementById('formId').value);
+                if(p && p.generalInfo && p.generalInfo.expenses) existingExpenses = p.generalInfo.expenses;
+            }
 
             let kpis = [], risks = [], cals = [], pdcaGroups = [], budgets = [];
             document.querySelectorAll('#kpiBody tr').forEach(tr => kpis.push({ type: tr.querySelector('.kpi-type').value, ind: tr.querySelector('.kpi-ind').value, met: tr.querySelector('.kpi-met').value, tool: tr.querySelector('.kpi-tool').value }));
@@ -699,7 +917,7 @@
 
             const data = {
                 action: "save", id: document.getElementById('formId').value, year: document.getElementById('fYear').value, projectName: document.getElementById('fName').value, department: document.getElementById('fDept').value, subDept: document.getElementById('fSubDept').value, projType: document.getElementById('fProjType').value, manager: getCheckedValues('manager'), time: getCheckedValues('time'), budgetTotal: document.getElementById('fTotalBudget').value,
-                generalInfo: { activities: getActivities(), reason: document.getElementById('fReason').value, obj: getListData('objBody'), goalQun: getListData('goalQunBody'), goalQual: getListData('goalQualBody'), target: document.getElementById('fTarget').value, kpis: kpis, risks: risks, bgSrc: [$('#fBgSrc1').val(), $('#fBgSrc2').val(), $('#fBgSrc3').val(), $('#fBgSrc4').val(), $('#fBgSrc5').val(), $('#fBgSrc6Name').val(), $('#fBgSrc6').val()], stdSchool: getCheckedValues('stdSchool'), stdOnesqa: getCheckedValues('stdOnesqa'), stdObec: getCheckedValues('stdObec'), stdSpm: getCheckedValues('stdSpm'), stdStrategy: getCheckedValues('stdStrategy'), signature: document.getElementById('fSigBase64').value },
+                generalInfo: { activities: getActivities(), reason: document.getElementById('fReason').value, obj: getListData('objBody'), goalQun: getListData('goalQunBody'), goalQual: getListData('goalQualBody'), target: document.getElementById('fTarget').value, kpis: kpis, risks: risks, bgSrc: [$('#fBgSrc1').val(), $('#fBgSrc2').val(), $('#fBgSrc3').val(), $('#fBgSrc4').val(), $('#fBgSrc5').val(), $('#fBgSrc6Name').val(), $('#fBgSrc6').val()], stdSchool: getCheckedValues('stdSchool'), stdOnesqa: getCheckedValues('stdOnesqa'), stdObec: getCheckedValues('stdObec'), stdSpm: getCheckedValues('stdSpm'), stdStrategy: getCheckedValues('stdStrategy'), signature: document.getElementById('fSigBase64').value, expenses: existingExpenses },
                 calendar: cals, pdca: pdcaGroups, budgetDetails: budgets
             };
             Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false}); Swal.showLoading();
@@ -725,7 +943,6 @@
             (p.generalInfo.risks || []).forEach(r => addRiskRow(r.factor, r.sol));
             (p.calendar || []).forEach(r => addCalRow(r.task, r.start, r.end, r.days));
             
-            // Rebuild PDCA
             if(p.pdca && p.pdca.length > 0 && p.pdca[0].actName !== undefined) {
                 p.pdca.forEach((grp, index) => {
                     let tableId = `pdca_tbl_${index}`;
@@ -734,7 +951,6 @@
                 });
             } else { generatePDCATables(); }
 
-            // Rebuild Budget Groups
             if(p.budgetDetails && p.budgetDetails.length > 0) {
                 if(p.budgetDetails[0].groupName !== undefined) {
                     p.budgetDetails.forEach(grp => { let gId = addBudgetGroup(grp.groupName); grp.items.forEach(i => addBudgetRowTo(gId, i.type, i.item, i.qty, i.price, i.total)); updateGroupTotal(document.getElementById(gId)); });
@@ -758,7 +974,7 @@
             });
         }
 
-        // ================= Prepare Print =================
+        // ================= Print =================
         function printProject() {
             document.getElementById('pYear').innerText = document.getElementById('fYear').value; 
             document.getElementById('pName').innerText = document.getElementById('fName').value; 
