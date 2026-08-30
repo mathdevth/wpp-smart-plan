@@ -463,9 +463,9 @@
                             <div class="row g-3">
                                 <div class="col-md-12"><label class="form-label">3. สนองมาตรฐานการศึกษาของสถานศึกษา</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSchool"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSchool"></div></div></div>
                                 <div class="col-md-12"><label class="form-label">4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdOnesqa"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdOnesqa"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
-                                <div class="col-md-12"><label class="form-label">7. กลยุทธ์ของโรงเรียน</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
+                                <div class="col-md-12"><label class="form-label">7. กลยุทธ์ของโรงเรียน ตามแผนพัฒนาคุณภาพสถานศึกษา ประจำปีงบประมาณ 2568 - 2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
                             </div>
                         </div>
 
@@ -818,8 +818,6 @@
             let name = localStorage.getItem('userName') || email;
             
             document.getElementById('displayUser').innerHTML = `<b>${name}</b><br><small class="text-muted">${email}</small><br><span class="badge bg-primary mt-1">${roleText}</span>`;
-            document.getElementById('reqActUser').value = name;
-            document.getElementById('reqBuyUser').value = name;
             
             if(role === 'guest') {
                 document.getElementById('menu-project-management').style.display = 'none';
@@ -1055,7 +1053,15 @@
             if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('active');
             
             if(pageId === 'budget') loadBudgetTracking();
-            if(pageId === 'req-activity' || pageId === 'req-purchase') populateReqProjects();
+            
+            if(pageId === 'req-activity' || pageId === 'req-purchase') {
+                populateReqProjects();
+                // ดึงชื่อผู้ใช้อีกรอบเพื่อความแน่ใจ
+                let currentName = localStorage.getItem('userName') || localStorage.getItem('userEmail');
+                if(document.getElementById('reqActUser')) document.getElementById('reqActUser').value = currentName;
+                if(document.getElementById('reqBuyUser')) document.getElementById('reqBuyUser').value = currentName;
+            }
+            
             if(pageId === 'users') loadUsers();
             if(pageId === 'settings') loadSettings();
         }
@@ -1131,7 +1137,8 @@
                 if (result.isConfirmed) {
                     let itemName = type === 'activity' ? document.getElementById('reqActName').value : document.getElementById('reqBuyItem').value;
                     let budget = type === 'activity' ? document.getElementById('reqActBudget').value : document.getElementById('reqBuyTotal').value;
-                    let user = localStorage.getItem('userName') || "ผู้ใช้งาน";
+                    let user = type === 'activity' ? document.getElementById('reqActUser').value : document.getElementById('reqBuyUser').value;
+                    
                     let reqTypeStr = type === 'activity' ? "ขออนุมัติจัดกิจกรรม" : "ขอจัดซื้อ/จัดจ้าง";
 
                     fetch(API_URL, {
@@ -1219,7 +1226,7 @@
                 <div class="pdca-group mb-4" data-act="${act.name}" data-mgr="${act.manager}">
                     <h6 class="fw-bold text-success">กิจกรรมที่ ${index+1}: ${act.name} ${act.manager ? `(ผู้รับผิดชอบ: ${act.manager})` : ''}</h6>
                     <table class="table table-bordered pdca-table">
-                        <thead class="table-light"><tr><th width="15%">ขั้นตอน</th><th>กิจกรรมดำเนินการ</th><th width="25%">ไตรมาส</th><th width="15%">งบ (บาท)</th><th width="5%">+</th></tr></thead>
+                        <thead class="table-light"><tr><th width="15%">ขั้นตอน</th><th>กิจกรรมดำเนินการ</th><th width="25%">ไตรมาส/เดือน</th><th width="15%">งบ (บาท)</th><th width="8%">จัดการ</th></tr></thead>
                         <tbody id="${tableId}"></tbody>
                     </table>
                 </div>`;
@@ -1232,25 +1239,50 @@
             });
         }
 
-        function addPDCARowTo(tbodyId, phase="ขั้นดำเนินการ (Do)", task="", qArr=[], budget="") {
+        function addPDCARowTo(tbodyId, phase="ขั้นดำเนินการ (Do)", task="", qArr=[], budget="", btnEl=null) {
             let idBtn = 'btn-q-' + Math.random().toString(36).substr(2, 9);
             let idList = 'list-q-' + Math.random().toString(36).substr(2, 9);
-            let tr = `<tr>
-                <td><select class="form-select pdca-phase"><option value="ขั้นวางแผน (Plan)" ${phase==='ขั้นวางแผน (Plan)'?'selected':''}>Plan</option><option value="ขั้นดำเนินการ (Do)" ${phase==='ขั้นดำเนินการ (Do)'?'selected':''}>Do</option><option value="ขั้นตรวจสอบ (Check)" ${phase==='ขั้นตรวจสอบ (Check)'?'selected':''}>Check</option><option value="ขั้นประเมินผล (Action)" ${phase==='ขั้นประเมินผล (Action)'?'selected':''}>Act</option></select></td>
+            let trId = 'tr-' + Math.random().toString(36).substr(2, 9);
+            
+            let tr = `<tr id="${trId}">
+                <td>
+                    <select class="form-select pdca-phase">
+                        <option value="ขั้นวางแผน (Plan)" ${phase==='ขั้นวางแผน (Plan)'?'selected':''}>Plan</option>
+                        <option value="ขั้นดำเนินการ (Do)" ${phase==='ขั้นดำเนินการ (Do)'?'selected':''}>Do</option>
+                        <option value="ขั้นตรวจสอบ (Check)" ${phase==='ขั้นตรวจสอบ (Check)'?'selected':''}>Check</option>
+                        <option value="ขั้นประเมินผล (Action)" ${phase==='ขั้นประเมินผล (Action)'?'selected':''}>Act</option>
+                    </select>
+                </td>
                 <td><textarea class="form-control pdca-task" rows="2">${task}</textarea></td>
                 <td>
                     <div class="dropdown pdca-quarter-container">
                         <button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="${idBtn}">
-                            <span class="dropdown-text text-muted text-truncate" style="max-width: 90%;">ไตรมาส...</span><i class="fas fa-chevron-down text-muted"></i>
+                            <span class="dropdown-text text-muted text-truncate" style="max-width: 90%;">ระบุเดือน/ไตรมาส...</span><i class="fas fa-chevron-down text-muted"></i>
                         </button>
-                        <div class="dropdown-menu p-2 shadow" id="${idList}"></div>
+                        <div class="dropdown-menu p-2 shadow" id="${idList}" style="width: 260px; max-height: 250px; overflow-y: auto;"></div>
                     </div>
                 </td>
                 <td><input type="number" class="form-control pdca-budget" placeholder="0" value="${budget}"></td>
-                <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">-</button><br><button class="btn btn-sm btn-success mt-1" onclick="addPDCARowTo('${tbodyId}')">+</button></td>
+                <td>
+                    <button class="btn btn-sm btn-danger w-100 mb-1" onclick="this.closest('tr').remove()">- ลบ</button>
+                    <button class="btn btn-sm btn-success w-100" onclick="let p = this.closest('tr').querySelector('.pdca-phase').value; addPDCARowTo('${tbodyId}', p, '', [], '', this)">+ แทรก</button>
+                </td>
             </tr>`;
-            $('#'+tbodyId).append(tr);
-            buildCheckboxDropdown(idList, idBtn, [{ group: "", items: ["ไตรมาส 1 (ต.ค.-ธ.ค.)", "ไตรมาส 2 (ม.ค.-มี.ค.)", "ไตรมาส 3 (เม.ย.-มิ.ย.)", "ไตรมาส 4 (ก.ค.-ก.ย.)"] }], idBtn);
+            
+            if (btnEl) {
+                $(btnEl).closest('tr').after(tr); 
+            } else {
+                $('#'+tbodyId).append(tr); 
+            }
+            
+            const timeOptions = [
+                { group: "ไตรมาส 1", items: ["ไตรมาส 1 (ต.ค.-ธ.ค.)", "ต.ค.", "พ.ย.", "ธ.ค."] },
+                { group: "ไตรมาส 2", items: ["ไตรมาส 2 (ม.ค.-มี.ค.)", "ม.ค.", "ก.พ.", "มี.ค."] },
+                { group: "ไตรมาส 3", items: ["ไตรมาส 3 (เม.ย.-มิ.ย.)", "เม.ย.", "พ.ค.", "มิ.ย."] },
+                { group: "ไตรมาส 4", items: ["ไตรมาส 4 (ก.ค.-ก.ย.)", "ก.ค.", "ส.ค.", "ก.ย."] }
+            ];
+            
+            buildCheckboxDropdown(idList, idBtn, timeOptions, idBtn);
             if(qArr && qArr.length > 0) setCheckedValues(idBtn, idBtn, qArr);
         }
 
@@ -1375,7 +1407,7 @@
                     let manageBtn = "";
                     if(role !== 'guest') {
                         manageBtn = `<td>
-                            <button class="btn btn-sm btn-warning mb-1 w-100" onclick="editProject('${p.id}')">แก้ไข</button> 
+                            <button class="btn btn-sm btn-warning w-100 mb-1" onclick="editProject('${p.id}')">แก้ไข</button> 
                             <button class="btn btn-sm btn-danger w-100" onclick="deleteProject('${p.id}')">ลบ</button>
                         </td>`;
                     }
@@ -1397,7 +1429,7 @@
             });
         }
 
-        // ================= ดูรายละเอียด (ป้องกันบั๊กอย่างสมบูรณ์) =================
+        // ================= ดูรายละเอียดและ Chart.js (ป้องกัน Error สมบูรณ์ 100%) =================
         function viewProjectDetails(id) {
             try {
                 let p = allProjects.find(x => x.id === id); 
@@ -1465,7 +1497,7 @@
 
                 let pdcaHtml = "";
                 (p.pdca || []).forEach((grp, idx) => {
-                    pdcaHtml += `<div class="mb-2"><b>กิจกรรมที่ ${idx+1}: ${grp.actName}</b><table class="table table-sm table-bordered mt-1"><thead class="table-light text-center"><tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส</th><th>งบประมาณ</th></tr></thead><tbody>`;
+                    pdcaHtml += `<div class="mb-2"><b>กิจกรรมที่ ${idx+1}: ${grp.actName}</b><table class="table table-sm table-bordered mt-1"><thead class="table-light text-center"><tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส/เดือน</th><th>งบประมาณ</th></tr></thead><tbody>`;
                     (grp.rows || []).forEach(r => {
                         let qData = r.q || [];
                         if(!Array.isArray(qData)) qData = [qData];
@@ -1495,39 +1527,43 @@
                 });
                 document.getElementById('pdBudgetContainer').innerHTML = budgetHtml || "ไม่มีข้อมูล";
 
-                // ปกป้องกราฟ Chart.js
-                if (typeof Chart !== 'undefined') {
-                    if(chartInstance) { chartInstance.destroy(); }
-                    let ctx = document.getElementById('budgetChart').getContext('2d');
-                    chartInstance = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['ใช้ไปแล้ว', 'คงเหลือ'],
-                            datasets: [{
-                                data: [expense, remain < 0 ? 0 : remain],
-                                backgroundColor: ['#ff758c', '#2ecc71'],
-                                borderWidth: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { position: 'bottom' } }
-                        }
-                    });
-                }
-
-                // การเรียก Bootstrap Modal แบบอัปเดต 100%
+                // การเรียก Bootstrap Modal ที่ถูกต้องที่สุด
                 let modalEl = document.getElementById('projectDetailsModal');
+                
+                // ถ้ายุ่งกับ DOM บ่อยๆ ใช้ Bootstrap object
                 let modalObj = bootstrap.Modal.getInstance(modalEl);
                 if (!modalObj) {
                     modalObj = new bootstrap.Modal(modalEl);
                 }
-                modalObj.show();
+                
+                // ให้เวลาหน้าเว็บเรนเดอร์ก่อนสั่งโชว์ กราฟจะได้ไม่บั๊ก
+                setTimeout(() => {
+                    modalObj.show();
+                    if (typeof Chart !== 'undefined') {
+                        if(chartInstance) { chartInstance.destroy(); }
+                        let ctx = document.getElementById('budgetChart').getContext('2d');
+                        chartInstance = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['ใช้ไปแล้ว', 'คงเหลือ'],
+                                datasets: [{
+                                    data: [expense, remain < 0 ? 0 : remain],
+                                    backgroundColor: ['#ff758c', '#2ecc71'],
+                                    borderWidth: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { position: 'bottom' } }
+                            }
+                        });
+                    }
+                }, 200); // ดีเลย์ 200ms ช่วยแก้บั๊กกราฟไม่โหลด
 
             } catch(e) {
                 console.error(e);
-                Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถแสดงรายละเอียดได้: ' + e.message, 'error');
+                Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถแสดงรายละเอียดได้ (อาจเกิดจากข้อมูลโครงการไม่สมบูรณ์)', 'error');
             }
         }
 
@@ -1716,7 +1752,7 @@
             document.getElementById('sumTotalRemain').innerText = (sumTotal - sumExpense).toLocaleString('th-TH', {minimumFractionDigits: 2});
         }
 
-        // ป้องกัน Error ด้วย Try-Catch
+        // ป้องกัน Error ด้วย Try-Catch แบบสมบูรณ์ที่สุด
         function openExpenseModal(id) {
             try {
                 let role = localStorage.getItem('userRole');
@@ -1751,7 +1787,9 @@
                 if (!modalObj) {
                     modalObj = new bootstrap.Modal(modalEl);
                 }
-                modalObj.show();
+                
+                // ให้เวลาหน้าเว็บเคลียร์คลาสที่ค้างอยู่ 100ms ก่อนโชว์ Modal ช่วยแก้บั๊กเปิดไม่ขึ้น
+                setTimeout(() => { modalObj.show(); }, 100);
 
             } catch (e) {
                 console.error(e);
