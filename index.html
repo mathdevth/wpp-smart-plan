@@ -207,7 +207,7 @@
                         <div class="col-md-6"><label class="form-label">วันที่เริ่ม</label><input type="date" id="reqActStart" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">วันที่สิ้นสุด</label><input type="date" id="reqActEnd" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">งบประมาณที่ขออนุมัติ (บาท)</label><input type="number" id="reqActBudget" class="form-control" placeholder="0"></div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control" readonly></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control"></div>
                         
                         <div class="col-md-12 mt-4 text-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('activity')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
@@ -262,7 +262,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control" readonly></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control"></div>
                         <div class="col-md-6 text-end align-self-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('purchase')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
                             <button class="btn btn-3d btn-pink px-5" onclick="submitRequest('purchase')">ส่งคำขอจัดซื้อ/จัดจ้าง</button>
@@ -464,9 +464,9 @@
                             <div class="row g-3">
                                 <div class="col-md-12"><label class="form-label">3. สนองมาตรฐานการศึกษาของสถานศึกษา</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSchool"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSchool"></div></div></div>
                                 <div class="col-md-12"><label class="form-label">4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdOnesqa"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdOnesqa"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
-                                <div class="col-md-12"><label class="form-label">7. สนองกลยุทธ์ของโรงเรียน</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
+                                <div class="col-md-12"><label class="form-label">7. กลยุทธ์ของโรงเรียน ตามแผนพัฒนาคุณภาพสถานศึกษา ประจำปีงบประมาณ 2568 - 2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
                             </div>
                         </div>
 
@@ -541,30 +541,108 @@
 
     <!-- ================= Modals ================= -->
 
-    <!-- Modal ดูรายละเอียดโครงการพร้อมกราฟ -->
+    <!-- Modal ดูรายละเอียดโครงการทั้งหมดพร้อมกราฟ -->
     <div class="modal fade" id="projectDetailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content" style="border-radius: 15px;">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title fw-bold text-primary" id="pdTitle">รายละเอียดโครงการ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><b>ปีงบประมาณ:</b> <span id="pdYear"></span></p>
-                            <p><b>ผู้รับผิดชอบ:</b> <span id="pdManager"></span></p>
-                            <p><b>งบประมาณที่ได้รับ:</b> <span id="pdBudget" class="text-primary fw-bold"></span> บาท</p>
+                <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+                    
+                    <!-- ส่วนหัว: สรุปและกราฟ -->
+                    <div class="row mb-4">
+                        <div class="col-md-7">
+                            <h5 class="fw-bold border-bottom pb-2">ข้อมูลพื้นฐาน</h5>
+                            <p class="mb-1"><b>ปีงบประมาณ:</b> <span id="pdYear"></span></p>
+                            <p class="mb-1"><b>กลุ่มบริหารงาน:</b> <span id="pdDept"></span> (<span id="pdSubDept"></span>)</p>
+                            <p class="mb-1"><b>ลักษณะโครงการ:</b> <span id="pdProjType"></span></p>
+                            <p class="mb-1"><b>ผู้รับผิดชอบ:</b> <span id="pdManager"></span></p>
+                            <p class="mb-1"><b>ระยะเวลาดำเนินการ:</b> <span id="pdTime"></span></p>
+                            <p class="mb-1"><b>งบประมาณที่ได้รับ:</b> <span id="pdBudget" class="text-primary fw-bold fs-5"></span> บาท</p>
                         </div>
-                        <div class="col-md-6 d-flex justify-content-center">
-                            <div style="width: 200px; height: 200px;">
+                        <div class="col-md-5 d-flex justify-content-center align-items-center">
+                            <div style="width: 220px; height: 220px;">
                                 <canvas id="budgetChart"></canvas>
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <h6 class="fw-bold">กิจกรรมย่อย:</h6>
-                    <ul id="pdActivities" class="text-muted"></ul>
+
+                    <!-- กิจกรรมย่อย -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2">กิจกรรมย่อยในโครงการ</h6>
+                        <ul id="pdActivities" class="text-muted mb-0"></ul>
+                    </div>
+
+                    <!-- แท็บเนื้อหาละเอียด -->
+                    <ul class="nav nav-tabs mb-3" id="pdTabs" role="tablist">
+                        <li class="nav-item"><button class="nav-link active fw-bold" data-bs-toggle="tab" data-bs-target="#pdTabPolicy">ความสอดคล้อง (นโยบาย)</button></li>
+                        <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#pdTabDetail">หลักการ & เป้าหมาย</button></li>
+                        <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#pdTabPlan">แผนงาน & PDCA</button></li>
+                        <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#pdTabBudget">รายละเอียดงบประมาณ</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- Tab 1: Policies -->
+                        <div class="tab-pane fade show active" id="pdTabPolicy">
+                            <div class="mb-3"><b>มาตรฐานสถานศึกษา:</b> <ul id="pdStdSchool" class="text-muted"></ul></div>
+                            <div class="mb-3"><b>มาตรฐาน สมศ.:</b> <ul id="pdStdOnesqa" class="text-muted"></ul></div>
+                            <div class="mb-3"><b>นโยบาย สพฐ.:</b> <ul id="pdStdObec" class="text-muted"></ul></div>
+                            <div class="mb-3"><b>นโยบาย สพม.:</b> <ul id="pdStdSpm" class="text-muted"></ul></div>
+                            <div class="mb-3"><b>กลยุทธ์โรงเรียน:</b> <ul id="pdStdStrategy" class="text-muted"></ul></div>
+                        </div>
+                        
+                        <!-- Tab 2: Details & KPIs -->
+                        <div class="tab-pane fade" id="pdTabDetail">
+                            <div class="mb-3"><b>หลักการและเหตุผล:</b> <p id="pdReason" style="white-space: pre-line;" class="text-muted"></p></div>
+                            <div class="mb-3"><b>วัตถุประสงค์:</b> <ol id="pdObj" class="text-muted"></ol></div>
+                            <div class="row mb-3">
+                                <div class="col-md-6"><b>เป้าหมายเชิงปริมาณ:</b> <ul id="pdGoalQun" class="text-muted"></ul></div>
+                                <div class="col-md-6"><b>เป้าหมายเชิงคุณภาพ:</b> <ul id="pdGoalQual" class="text-muted"></ul></div>
+                            </div>
+                            <div class="mb-3"><b>ผลที่คาดว่าจะได้รับ:</b> <p id="pdTarget" style="white-space: pre-line;" class="text-muted"></p></div>
+                            <div class="mb-3">
+                                <b>ตัวชี้วัดความสำเร็จ (KPIs):</b>
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-sm table-bordered text-center align-middle"><thead class="table-light"><tr><th>ประเภท</th><th>ตัวชี้วัด</th><th>วิธีประเมิน</th><th>เครื่องมือ</th></tr></thead><tbody id="pdKpiTable"></tbody></table>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <b>การวิเคราะห์ความเสี่ยง:</b>
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-sm table-bordered text-center align-middle"><thead class="table-light"><tr><th>ปัจจัยเสี่ยง</th><th>แนวทางบริหารจัดการ</th></tr></thead><tbody id="pdRiskTable"></tbody></table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 3: Calendar & PDCA -->
+                        <div class="tab-pane fade" id="pdTabPlan">
+                            <div class="mb-3">
+                                <b>ปฏิทินการปฏิบัติงาน:</b>
+                                <div class="table-responsive mt-2 mb-4">
+                                    <table class="table table-sm table-bordered text-center align-middle"><thead class="table-light"><tr><th>กิจกรรม</th><th>วันที่เริ่ม</th><th>วันที่สิ้นสุด</th><th>รวม (วัน)</th></tr></thead><tbody id="pdCalTable"></tbody></table>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <b>วิธีดำเนินการ (PDCA):</b>
+                                <div id="pdPdcaContainer" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 4: Budget Details -->
+                        <div class="tab-pane fade" id="pdTabBudget">
+                            <div class="mb-3">
+                                <b>แหล่งงบประมาณ:</b> 
+                                <ul id="pdBgSrc" class="text-muted mt-2"></ul>
+                            </div>
+                            <div class="mb-3">
+                                <b>รายละเอียดการใช้งบประมาณ (แยกตามกิจกรรม):</b>
+                                <div id="pdBudgetContainer" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -745,6 +823,7 @@
             document.getElementById('reqActUser').value = name;
             document.getElementById('reqBuyUser').value = name;
             
+            // ซ่อนเมนูตาม Role
             if(role === 'guest') {
                 document.getElementById('menu-project-management').style.display = 'none';
                 document.getElementById('menu-approval-system').style.display = 'none';
@@ -849,6 +928,7 @@
 
         // ================= 4. Settings & Policies Defaults =================
         function loadSettings() {
+            // ล้าง Cache นโยบาย หากเป็นเวอร์ชันก่อนหน้า
             if (localStorage.getItem('appVersion') !== '1.3') {
                 ['setObec', 'setSpm', 'setStrategy'].forEach(id => localStorage.removeItem(id));
                 localStorage.setItem('appVersion', '1.3');
@@ -863,6 +943,7 @@
             document.getElementById('setDeputy').value = localStorage.getItem('setDeputy') || "นางสาวปทุมวดี วงษ์สุธรรม";
             document.getElementById('setDirector').value = localStorage.getItem('setDirector') || "นายมนูญ บุบผาพ่วง";
             
+            // นโยบายจากเอกสาร
             const defObec = `1. ปลูกฝังความรักในสถาบันหลักของชาติ และน้อมนำพระบรมราโชบายด้านการศึกษาสู่การปฏิบัติ\n1.1 สร้างความรู้ ความเข้าใจในการนำหลักปรัชญาของเศรษฐกิจพอเพียงมาปรับใช้ในสถานศึกษาเพื่อการดำเนินชีวิตอย่างสมดุลและยั่งยืน\n1.2 ส่งเสริม สนับสนุนการจัดกิจกรรมน้อมนำพระบรมราโชบายด้านการศึกษาของในหลวงรัชกาลที่ 10 สู่การปฏิบัติ เพื่อให้ผู้เรียนเป็นคนดี คนเก่ง มีคุณภาพ และสามารถดำรงชีวิตอยู่ในสังคมได้อย่างมีความสุข\n2. จัดการเรียนรู้ประวัติศาสตร์ หน้าที่พลเมือง ศีลธรรม และประชาธิปไตย\n2.1 พัฒนาการจัดการเรียนรู้ประวัติศาสตร์ หน้าที่พลเมือง ศีลธรรม และประชาธิปไตยในสังคมร่วมสมัย\n2.2 พัฒนานวัตกรรมการจัดการเรียนรู้ประวัติศาสตร์ หน้าที่พลเมือง ศีลธรรม และประชาธิปไตย และส่งเสริมความรักชาติ ศาสนา กษัตริย์ สู่ห้องเรียนวิถีใหม่ด้วยเทคโนโลยีดิจิทัลที่ทันสมัย\n3. ปรับกระบวนการจัดการเรียนรู้ให้หลากหลาย ด้วยเทคโนโลยีที่ทันสมัย\n3.1 ส่งเสริมให้มีการต่อยอดแนวคิดการจัดการเรียนรู้เชิงรุก (Active Learning) และการคิดวิเคราะห์อย่างมีเหตุผล เพื่อพัฒนาสมรรถนะสำคัญของผู้เรียน\n3.2 ส่งเสริมการจัดการเรียนรู้ด้วยเทคโนโลยีที่ทันสมัย เช่น เทคโนโลยีปัญญาประดิษฐ์ (AI) ระบบการเรียนแบบ Hybrid, VR GAMIFICATION, Metaverse, Digital Twin 3.0, Digital Classroom เป็นต้น\n3.3 พัฒนาศักยภาพและคุณลักษณะผู้เรียนตามความถนัด ความสนใจ ด้วยการเรียนรู้อย่างมีความสุข และแสดงออกอย่างสร้างสรรค์\n3.4 ส่งเสริมผู้เรียนให้มีคุณลักษณะที่พึงประสงค์ด้านสิ่งแวดล้อม และมีจิตสำนึกที่ดีในการดูแลรักษา ฟื้นฟูทรัพยากรธรรมชาติและสิ่งแวดล้อม\n3.5 ส่งเสริมผู้เรียนให้มีคุณลักษณะที่พึงประสงค์ด้านสิ่งแวดล้อม และมีจิตสำนึกในการอนุรักษ์ฟื้นฟูทรัพยากรธรรมชาติและสิ่งแวดล้อม\n3.6 ส่งเสริม พัฒนา ต่อยอดแนวปฏิบัติที่ดีในการจัดการศึกษาของพื้นที่นวัตกรรมการศึกษา\n4. ส่งเสริมการอ่าน เพื่อเป็นวิถีในการค้นหาความรู้และต่อยอดองค์ความรู้ที่สูงขึ้น\n4.1 ส่งเสริมการอ่าน และสร้างนิสัยรักการอ่านเพื่อการเรียนรู้ตลอดชีวิต\n4.2 พัฒนาความสามารถด้านการอ่านตามแนวทางการประเมิน PISA\n4.3 ถอดบทเรียน ค้นหา Best Practice และนวัตกรรมด้านการอ่าน\n5. ส่งเสริม สนับสนุนกิจกรรมพัฒนาผู้เรียน\n5.1 ส่งเสริมให้ผู้เรียนมีคุณลักษณะด้านการทำประโยชน์เพื่อส่วนรวม การมีจิตอาสาทำความดีด้วยหัวใจ\n5.2 ส่งเสริมกิจกรรมการเรียนรู้แบบบูรณาการผ่านกิจกรรมลูกเสือ เนตรนารี ยุวกาชาด ผู้บำเพ็ญประโยชน์ และกิจกรรมพัฒนาผู้เรียนอื่น ๆ\n5.3 ส่งเสริมกิจกรรมสภานักเรียน ชุมนุม ชมรม และการมีส่วนร่วมให้เกิดวิถีประชาธิปไตยในโรงเรียน เป็นพลเมืองดี และแสดงออกอย่างสร้างสรรค์\n6. เร่งพัฒนาการจัดการศึกษาแบบเรียนรวมสำหรับเด็กที่มีความต้องการจำเป็นพิเศษ\n6.1 สนับสนุนสื่อ เทคโนโลยีที่ทันสมัย และสิ่งอำนวยความสะดวก เพื่อพัฒนาศักยภาพเด็กที่มีความต้องการจำเป็นพิเศษ ร่วมกับหน่วยงานภาคีเครือข่ายที่เกี่ยวข้อง\n6.2 พัฒนาครูผู้สอนและพี่เลี้ยงเด็กพิการให้มีองค์ความรู้ เจตคติ และทักษะในการจัดการเรียนรู้เด็กที่มีความต้องการจำเป็นพิเศษ\n6.3 ส่งเสริม สนับสนุนให้สถานศึกษาจัดห้องเรียนและแหล่งเรียนรู้ให้เอื้อต่อเด็กที่มีความต้องการจำเป็นพิเศษ\n6.4 สร้างเครือข่ายบูรณาการความร่วมมือเพื่อช่วยเหลือเด็กที่มีความต้องการจำเป็นพิเศษระหว่างสถานศึกษา สำนักงานเขตพื้นที่การศึกษา และทีมสหวิชาชีพ\n6.5 นิเทศ กำกับ ติดตาม โดยร่วมมือกับเครือข่ายในทุกภาคส่วน\n7. ส่งเสริมการจัดการศึกษาเพื่อความเป็นเลิศสำหรับผู้มีความสามารถพิเศษ\n7.1 สนับสนุนการจัดกิจกรรมเสริมสร้างศักยภาพผู้เรียนตามพหุปัญญา\n7.2 ส่งเสริม สนับสนุนการจัดการเรียนรู้ที่เหมาะสมสำหรับผู้มีความสามารถพิเศษ ด้านคณิตศาสตร์ ด้านวิทยาศาสตร์ ด้านทัศนศิลป์ ด้านดนตรี ด้านนาฏศิลป์ ด้านกีฬา และด้านอื่น ๆ ด้วยวิธีการที่หลากหลาย ตามความถนัดและความสนใจของผู้เรียน\n7.3 ส่งเสริมความเป็นเลิศของผู้มีความสามารถพิเศษ และ Soft Power อย่างเต็มศักยภาพเพื่อเพิ่มขีดความสามารถในการแข่งขันของประเทศ\n8. เสริมสร้างความปลอดภัยของผู้เรียน ครูและบุคลากรทางการศึกษา และสถานศึกษา\n8.1 ส่งเสริม สนับสนุนให้สถานศึกษาเสริมสร้างความปลอดภัยของผู้เรียน ครูและบุคลากรในการพาผู้เรียนไปนอกสถานศึกษา\n8.2 สร้างเครือข่ายและกลไกในการดูแลความปลอดภัยให้กับผู้เรียน ครูและบุคลากรทางการศึกษา และสถานศึกษา\n8.3 สร้างภูมิคุ้มกัน ปลูกฝัง ป้องกันและแก้ไขปัญหายาเสพติดในสถานศึกษา รวมทั้งมีระบบติดตามดูแลช่วยเหลือเพื่อไม่ให้เข้าสู่วงจรยาเสพติด\n8.4 สร้างระบบรับรู้ปัญหา รับร้องเรียน ร้องทุกข์ ดูแลความปลอดภัยของผู้เรียน ครูและบุคลากรทางการศึกษาผ่านระบบ OBEC Safety Center\n8.5 ปรับปรุงโครงสร้างพื้นฐานทางกายภาพของสถานศึกษา เพื่อให้เป็นพื้นที่ปลอดภัยอบอุ่น มีความสุข เอื้อต่อการเรียนรู้\n8.6 ปรับปรุงโครงสร้างพื้นฐานทางกายภาพของสถานศึกษา เพื่อให้เป็นพื้นที่ปลอดภัยอบอุ่น มีความสุข เอื้อต่อการเรียนรู้\n9. เพิ่มโอกาสและสร้างความเสมอภาคทางการศึกษา\n9.1 ส่งเสริม สนับสนุนการจัดการศึกษาที่เด็กหยุดพักทั้งในระบบ นอกระบบ และตามอัธยาศัยเพื่อแก้ปัญหาเด็กที่อยู่นอกระบบการศึกษา เด็กตกหล่น และเด็กออกกลางคัน ให้กลับเข้าสู่ระบบการศึกษาตามนโยบายรัฐบาล “Thailand Zero Dropout”\n9.2 ส่งเสริม สนับสนุน ป้องกัน เฝ้าระวัง และดูแลช่วยเหลือเด็กกลุ่มเสี่ยง เด็กไร้สัญชาติเด็กพื้นที่สูงในถิ่นทุรกันดาร และเด็กที่มีความจำเป็นรายบุคคล เพื่อไม่ให้หลุดจากระบบการศึกษาโดยบูรณาการความร่วมมือกับบุคคลและหน่วยงานที่เกี่ยวข้อง\n9.3 ส่งเสริม สนับสนุนให้เด็กที่มีความจำเป็นพิเศษ เด็กพิการและเด็กด้อยโอกาสได้รับโอกาสเข้าถึงการศึกษา แหล่งเรียนรู้ และการฝึกอาชีพที่หลากหลายเหมาะสมตามศักยภาพเพื่อให้มีทักษะในการดำเนินชีวิต สามารถพึ่งตนเองได้\n9.4 ส่งเสริม สนับสนุนการจัดการศึกษาขั้นพื้นฐานในศูนย์การเรียน โดยบุคคล ครอบครัว (Home School) องค์กรชุมชน องค์กรเอกชน องค์กรวิชาชีพ และสถานประกอบการ\n10. พัฒนาครูและบุคลากรทางการศึกษาให้มีความรู้ ความสามารถ และทักษะที่ทันสมัย\n10.1 พัฒนาผู้บริหารสำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน ผู้บริหารการศึกษาผู้บริหารสถานศึกษา และบุคลากรทางการศึกษา ให้เป็นผู้นำเชิงกลยุทธ์ นำนโยบายสู่การปฏิบัติ และมีทักษะในการบริหารสถานการณ์\n10.2 พัฒนาสมรรถนะครู ด้านภาษาอังกฤษ ภาษาจีน เทคโนโลยีดิจิทัล จิตวิญญาณความเป็นครูและทักษะอื่น ๆ ที่จำเป็น\n10.3 พัฒนาครูและบุคลากรทางการศึกษา ให้มีความรู้และสมรรถนะด้านวิชาการ ด้านทักษะการจัดการเรียนรู้เชิงรุก (Active Learning) และเทคโนโลยีที่ทันสมัย\n11. ลดภาระครูและบุคลากรทางการศึกษา\n11.1 แก้ไขปัญหาหนี้สินครูและบุคลากรทางการศึกษา\n11.2 เพิ่มประสิทธิภาพการบริหารงานด้วยสารสนเทศเพื่อการบริหารและการจัดการ สำหรับครูและบุคลากรทางการศึกษา\n11.3 สรรหา บรรจุ และแต่งตั้ง โยกย้าย ครูและบุคลากรทางการศึกษา ตามหลักการบริหารกิจการบ้านเมืองที่ดี ยึดถือหลักธรรมาภิบาล โปร่งใส ตรวจสอบได้ และตรงตามความต้องการ\n11.4 สรรหาให้มีผู้ปฏิบัติงานนักการภารโรงครบทุกโรงเรียน\n11.5 ลดภาระการประเมินในระดับสำนักงานเขตพื้นที่การศึกษาและสถานศึกษา โดยมุ่งเน้นการบูรณาการใช้ข้อมูลร่วมกัน นำเทคโนโลยีดิจิทัลมาใช้ในการเชื่อมโยงข้อมูลและรายงานผล ลดการเตรียมการเพื่อรองรับการประเมิน และปรับลดภาระงานที่ไม่จำเป็นหรือซ้ำซ้อน\n11.6 ส่งเสริม สนับสนุนการจัดหาอุปกรณ์การสอน และสวัสดิการของครูและบุคลากรทางการศึกษาให้เพียงพอและเหมาะสม\n11.7 บริหารจัดการโรงเรียนขนาดเล็ก และโรงเรียนขยายโอกาสทางการศึกษา\n11.8 ส่งเสริมการจัดการเรียนการสอนทางไกลผ่านดาวเทียม (DLTV/DLIT) และการจัดการสื่อสารทางไกลแบบสื่อสารสองทาง (IDL)\n11.9 พัฒนาการสื่อสาร การประชาสัมพันธ์ การผลิตและเผยแพร่สื่อประชาสัมพันธ์ เพื่อส่งเสริมภาพลักษณ์ของกระทรวงศึกษาธิการทั้งในพื้นฐานโดยใช้เทคโนโลยีที่ทันสมัย\n12. ลดภาระนักเรียนและผู้ปกครอง\n12.1 เรียนรู้ได้ทุกที่ ทุกเวลา (Anywhere Anytime) โดยมีระบบหรือแพลตฟอร์มการเรียนรู้ที่ "ยึดผู้เรียนเป็นศูนย์กลาง" เพื่อลดความเหลื่อมล้ำทางการศึกษา\n12.2 ส่งเสริมการจัดทำแฟ้มประวัติผู้เรียนแบบออนไลน์ (Portfolio online)\n12.3 ส่งเสริมระบบแนะแนว การชี้แนะ (Coaching) และดูแลสุขภาพกายและสุขภาพจิตของผู้เรียน \n12.4 พัฒนาระบบการเทียบโอนความรู้ และประสบการณ์เพื่อใช้ในการสะสมหน่วยกิต และผลการเรียนของผู้เรียน (Credit Bank)\n12.5 ส่งเสริมทักษะอาชีพที่จำเป็นแห่งอนาคต (Future Skill) และส่งเสริมรายได้ระหว่างเรียน (Learn to Earn)\n12.6 ขับเคลื่อนโครงการ “สุขาดี มีความสุข” อย่างต่อเนื่อง เพื่อสุขอนามัยที่ดีของผู้เรียน ครู และบุคลากรทางการศึกษา\n12.7 จัดให้อาหารสำหรับนักเรียน เพื่อแก้ไขปัญหาภาวะทุพโภชนาการ รวมทั้งสนับสนุนงบประมาณอาหารกลางวันให้นักเรียนระดับมัธยมศึกษาตอนต้นในโรงเรียนขยายโอกาสทางการศึกษา\n12.8 ขับเคลื่อนโครงการ “สุขาดี มีความสุข” อย่างต่อเนื่อง เพื่อสุขอนามัยที่ดีของผู้เรียนครูและบุคลากรทางการศึกษา\n13. พัฒนาระบบบริหารจัดการให้มีประสิทธิภาพ ถูกต้อง รวดเร็ว ประโยชน์ ประหยัด โปร่งใส และตรวจสอบได้\n13.1 พัฒนาการบริหารจัดการหน่วยงานในทุกระดับให้มีความทันสมัย และมีประสิทธิภาพ\n13.2 ยกระดับคุณธรรมและความโปร่งใสในการดำเนินงานของหน่วยงานทุกระดับ (ITA)\n13.3 จัดทำโครงสร้างพื้นฐานด้านเทคโนโลยีดิจิทัลที่มีความปลอดภัย ให้กับหน่วยงานและสถานศึกษาในสังกัด\n13.4 ปรับปรุงการบริหารจัดการการงบประมาณและกฎหมายให้ทันปัจจุบัน สอดคล้องกับสถานการณ์ที่เปลี่ยนแปลงได้อย่างมีประสิทธิภาพ`;
 
             const defSpm = `1.ปลูกฝังความรักในสถาบันหลักของชาติ และน้อมนำพระบรมราโชบายด้านการศึกษาสู่การปฏิบัติ\n1.1 ส่งเสริมความรักชาติ ศาสน์ กษัตริย์ และน้อมนำพระบรมราโชบายของในหลวงรัชกาลที่ 10 สู่การพัฒนาผู้เรียน \n1.2 ส่งเสริมการน้อมนำหลักปรัชญาของเศรษฐกิจพอเพียงมาบูรณาการกับการเรียนการสอน และค้นหานวัตกรรมไปประยุกต์ใช้ \n2. ส่งเสริมและพัฒนาการจัดการเรียนรู้ ภูมิศาสตร์ ประวัติศาสตร์ หน้าที่พลเมือง ศีลธรรม และประชาธิปไตย\n2.1 ส่งเสริมการจัดการเรียนรู้ให้มีความยืดหยุ่นในสังคมร่วมสมัย \n2.2 ส่งเสริมการสร้าง พัฒนา หรือจัดหาสื่อ นวัตกรรม เทคโนโลยีที่ทันสมัย และแหล่งเรียนรู้ \n3. ปรับกระบวนการจัดการเรียนรู้ให้หลากหลายด้วยเทคโนโลยีที่ทันสมัย\n3.1 ส่งเสริมให้สถานศึกษามีหลักสูตรที่ยืดหยุ่นตอบสนองต่อผู้เรียน \n3.2 ต่อยอดแนวคิด Active Learning การคิดวิเคราะห์ และการใช้เทคโนโลยีอย่างมีจริยธรรม \n3.3 ส่งเสริม พัฒนา ต่อยอดแนวปฏิบัติที่ดีด้วยนวัตกรรม \n3.4 ส่งเสริมจิตสำนึกในการอนุรักษ์ ฟื้นฟูทรัพยากรธรรมชาติและสิ่งแวดล้อม \n3.5 ส่งเสริมทักษะแห่งอนาคต (Future Skills) ทักษะอาชีพ การมีรายได้ระหว่างเรียน (Learn to Earn) และทวิศึกษาแนวใหม่ \n4. ส่งเสริมการอ่านให้เป็นวิถีปฏิบัติ\n4.1 พัฒนาทักษะการอ่านและการเขียนให้อยู่ในระดับอ่านคล่อง เขียนคล่อง \n4.2 ปลูกฝังนิสัยรักการอ่าน และการใช้ห้องสมุด \n4.3 พัฒนาความสามารถด้านการอ่านตามแนวทาง PISA \n5. ส่งเสริม สนับสนุนกิจกรรมพัฒนาผู้เรียน\n5.1 ส่งเสริมการทำประโยชน์เพื่อส่วนรวม การทำความดี และจิตอาสา \n5.2 สร้างผู้นำด้วยกระบวนการลูกเสือ เนตรนารี ยุวกาชาด ผู้บำเพ็ญประโยชน์ \n5.3 ส่งเสริมกิจกรรมสภานักเรียน ชุมนุม ชมรม และวิถีประชาธิปไตย \n6. พัฒนาการจัดการศึกษาสำหรับเด็กที่มีความต้องการจำเป็นพิเศษ\n6.1 พัฒนาผู้บริหารและครูให้จัดการศึกษาเรียนรวมได้อย่างมีประสิทธิภาพ \n6.2 สนับสนุนสิ่งอำนวยความสะดวกและสื่อเพื่อพัฒนาศักยภาพเด็กพิเศษ \n6.3 ปรับการเรียนการสอนและประเมินผลให้ยืดหยุ่นสำหรับเด็กเจ็บป่วยในโรงพยาบาล \n6.4 จัดห้องเรียนและแหล่งเรียนรู้ให้เอื้อต่อเด็กพิเศษ \n6.5 สร้างเครือข่ายบูรณาการความร่วมมือกับศูนย์การศึกษาพิเศษและทีมสหวิชาชีพ \n6.6 นิเทศ กำกับ ติดตาม ร่วมกับเครือข่าย \n7. ส่งเสริมศักยภาพผู้เรียนรายบุคคลสู่ความเป็นเลิศ\n7.1 พัฒนาความถนัดตามแนวทางพหุปัญญาเพื่อความเป็นเลิศด้านต่างๆ \n7.2 ยกระดับสมรรถนะตามกรอบ PISA 2029 \n7.3 สนับสนุนการจัดงานศิลปหัตถกรรมนักเรียน \n8. เสริมสร้างความปลอดภัยของผู้เรียน ครูและบุคลากรทางการศึกษา และสถานศึกษา\n8.1 ส่งเสริมความปลอดภัยทั้งในและนอกสถานศึกษา \n8.2 จัดทำแผนเผชิญเหตุรับมือภัย 4 กลุ่ม และซักซ้อมสถานการณ์ฉุกเฉิน \n8.3 สร้างภูมิคุ้มกัน ป้องกัน และแก้ไขปัญหายาเสพติด \n8.4 สร้างองค์ความรู้ในการรับมือภัยคุกคามทุกรูปแบบ \n8.5 สร้างเครือข่ายและกลไกดูแลความปลอดภัย \n8.6 รับเรื่องร้องเรียนและแก้ปัญหาผ่านศูนย์บริหารความสุขและความปลอดภัย \n8.7 ปรับปรุงโครงสร้างพื้นฐานทางกายภาพให้เป็นพื้นที่ปลอดภัย อบอุ่น \n9. เพิ่มโอกาสและสร้างความเสมอภาคทางการศึกษา\n9.1 พัฒนาโรงเรียนคุณภาพให้มีมาตรฐาน \n9.2 บริหารจัดการโรงเรียนขนาดเล็กให้มีประสิทธิภาพ \n9.3 ส่งเสริมการเรียนรู้ทุกที่ทุกเวลา (Anywhere Anytime) เพื่อลดความเหลื่อมล้ำ \n9.4 ส่งเสริมการศึกษาทางไกล (DLTV/DLIT และ IDL) \n9.5 นำเด็กตกหล่น เด็กออกกลางคัน และเด็กกลุ่มเสี่ยงกลับเข้าสู่ระบบ \n9.6 ให้เด็กพิเศษ พิการ ด้อยโอกาส เข้าถึงการศึกษา แหล่งเรียนรู้ และฝึกอาชีพ \n9.7 สนับสนุนการศึกษาในศูนย์การเรียน (Home School) องค์กรเอกชน และสถานประกอบการ \n10. พัฒนาครูและบุคลากรทางการศึกษาให้มีความรู้ ความสามารถ และทักษะที่ทันสมัย\n10.1 พัฒนาผู้บริหารให้เป็นผู้นำเชิงวิสัยทัศน์และกลยุทธ์ \n10.2 พัฒนาสมรรถนะครูด้านภาษา เทคโนโลยีดิจิทัล ทักษะการสอน และจิตวิญญาณความเป็นมืออาชีพ \n10.3 พัฒนาศึกษานิเทศก์และบุคลากรทางการศึกษา 38 ค. (2) อย่างต่อเนื่อง \n11. จัดการเรียนรู้และวัดประเมินผลที่มุ่งเน้นพัฒนาการตามศักยภาพผู้เรียนรายบุคคล\n11.1 สร้างความเข้มแข็งระบบแนะแนว การชี้แนะ (Coaching) และให้คำปรึกษา \n11.2 พัฒนาระบบวัดประเมินผลรายบุคคลด้วยสมุดพกนักเรียน หรือแฟ้มสะสมงาน (Portfolio) \n11.3 พัฒนาระบบเทียบโอนความรู้เพื่อสะสมหน่วยกิต (Credit Bank) \n11.4 นิเทศ กำกับ ติดตาม การขับเคลื่อนการจัดการเรียนรู้ \n12. พัฒนาระบบบริหารจัดการให้มีประสิทธิภาพ ถูกต้อง รวดเร็ว ประโยชน์ ประหยัด โปร่งใส และตรวจสอบได้\n12.1 พัฒนาการบริหารจัดการให้ทันสมัยและมีประสิทธิภาพ \n12.2 พัฒนาระบบประกันคุณภาพภายในสถานศึกษา \n12.3 ยกระดับคุณธรรมและความโปร่งใส (ITA) \n12.4 จัดหาโครงสร้างพื้นฐานและแพลตฟอร์มดิจิทัลที่ปลอดภัย \n12.5 พัฒนาการสื่อสารประชาสัมพันธ์เชิงภาพลักษณ์โดยใช้เทคโนโลยีที่ทันสมัย`;
@@ -979,7 +1060,7 @@
             if(pageId === 'settings') loadSettings();
         }
 
-        // ================= 6. Request Forms & 🤖 AI Checker (Server-side) =================
+        // ================= 6. Request Forms & AI Checker (Server-side) =================
         function populateReqProjects() {
             let html = `<option value="">-- เลือกโครงการที่สอดคล้อง --</option>`;
             allProjects.forEach(p => { html += `<option value="${p.id}">${p.projectName} (${p.year})</option>`; });
@@ -1042,7 +1123,7 @@
                 if(result.status === 'success') {
                     const aiReply = result.reply;
                     let icon = aiReply.includes("ความเสี่ยง") || aiReply.includes("ผิดระเบียบ") ? 'warning' : 'success';
-                    Swal.fire({ title: '🤖 ผลวิเคราะห์จาก Gemini', html: `<div class="text-start">${aiReply}</div>`, icon: icon });
+                    Swal.fire({ title: '🤖 ผลวิเคราะห์จาก Gemini 3.6 Flash', html: `<div class="text-start">${aiReply}</div>`, icon: icon });
                 } else {
                     Swal.fire('ข้อผิดพลาด', result.message || 'ไม่สามารถเชื่อมต่อ Gemini API ได้ โปรดเช็คการตั้งค่าคีย์ที่ Apps Script', 'error');
                 }
@@ -1316,7 +1397,7 @@
                         <td class="text-start">${p.projectName}</td>
                         <td>${(p.manager||[]).join(', ')}</td>
                         <td>${statusBadge}</td>
-                        <td><button class="btn btn-sm btn-outline-info" onclick="viewProjectDetails('${p.id}')"><i class="fas fa-eye"></i> ดู</button></td>
+                        <td><button class="btn btn-sm btn-outline-info" onclick="viewProjectDetails('${p.id}')"><i class="fas fa-eye"></i> ดูรายละเอียด</button></td>
                         ${manageBtn}
                     </tr>`;
                 });
@@ -1333,7 +1414,11 @@
             
             document.getElementById('pdTitle').innerText = p.projectName;
             document.getElementById('pdYear').innerText = p.year;
+            document.getElementById('pdDept').innerText = p.department || "-";
+            document.getElementById('pdSubDept').innerText = p.subDept || "-";
+            document.getElementById('pdProjType').innerText = p.projType || "-";
             document.getElementById('pdManager').innerText = (p.manager||[]).join(', ');
+            document.getElementById('pdTime').innerText = (p.time||[]).join(', ');
             
             let budget = Number(p.budgetTotal) || 0;
             let expensesArr = p.generalInfo.expenses || [];
@@ -1350,6 +1435,62 @@
             }
             document.getElementById('pdActivities').innerHTML = actsHtml;
 
+            const liHTML = arr => (arr || []).map(v => `<li>${v}</li>`).join('');
+            document.getElementById('pdStdSchool').innerHTML = liHTML(p.generalInfo.stdSchool);
+            document.getElementById('pdStdOnesqa').innerHTML = liHTML(p.generalInfo.stdOnesqa);
+            document.getElementById('pdStdObec').innerHTML = liHTML(p.generalInfo.stdObec);
+            document.getElementById('pdStdSpm').innerHTML = liHTML(p.generalInfo.stdSpm);
+            document.getElementById('pdStdStrategy').innerHTML = liHTML(p.generalInfo.stdStrategy);
+
+            document.getElementById('pdReason').innerText = p.generalInfo.reason || "-";
+            document.getElementById('pdTarget').innerText = p.generalInfo.target || "-";
+            document.getElementById('pdObj').innerHTML = liHTML(p.generalInfo.obj);
+            document.getElementById('pdGoalQun').innerHTML = liHTML(p.generalInfo.goalQun);
+            document.getElementById('pdGoalQual').innerHTML = liHTML(p.generalInfo.goalQual);
+
+            let kpiHtml = "";
+            (p.generalInfo.kpis || []).forEach(k => kpiHtml += `<tr><td>${k.type}</td><td class="text-start">${k.ind}</td><td>${k.met}</td><td>${k.tool}</td></tr>`);
+            document.getElementById('pdKpiTable').innerHTML = kpiHtml || "<tr><td colspan='4'>ไม่มีข้อมูล</td></tr>";
+
+            let riskHtml = "";
+            (p.generalInfo.risks || []).forEach(r => riskHtml += `<tr><td class="text-start">${r.factor}</td><td class="text-start">${r.sol}</td></tr>`);
+            document.getElementById('pdRiskTable').innerHTML = riskHtml || "<tr><td colspan='2'>ไม่มีข้อมูล</td></tr>";
+
+            let calHtml = "";
+            (p.calendar || []).forEach(c => calHtml += `<tr><td class="text-start">${c.task}</td><td>${c.start}</td><td>${c.end}</td><td>${c.days}</td></tr>`);
+            document.getElementById('pdCalTable').innerHTML = calHtml || "<tr><td colspan='4'>ไม่มีข้อมูล</td></tr>";
+
+            let pdcaHtml = "";
+            (p.pdca || []).forEach((grp, idx) => {
+                pdcaHtml += `<div class="mb-2"><b>กิจกรรมที่ ${idx+1}: ${grp.actName}</b><table class="table table-sm table-bordered mt-1"><thead class="table-light text-center"><tr><th>ขั้นตอน</th><th>วิธีดำเนินการ</th><th>ไตรมาส</th><th>งบประมาณ</th></tr></thead><tbody>`;
+                (grp.rows || []).forEach(r => {
+                    pdcaHtml += `<tr><td class="text-center">${r.phase}</td><td class="text-start" style="white-space: pre-line;">${r.task}</td><td class="text-center">${(r.q||[]).join(', ')}</td><td class="text-end">${Number(r.budget||0).toLocaleString('th-TH')}</td></tr>`;
+                });
+                pdcaHtml += `</tbody></table></div>`;
+            });
+            document.getElementById('pdPdcaContainer').innerHTML = pdcaHtml || "ไม่มีข้อมูล";
+
+            let bgSrcArr = p.generalInfo.bgSrc || [];
+            document.getElementById('pdBgSrc').innerHTML = `
+                <li>เงินอุดหนุนรายหัว (ปัจจุบัน): ${Number(bgSrcArr[0]||0).toLocaleString()} บาท</li>
+                <li>เงินอุดหนุนรายหัว (อดีต): ${Number(bgSrcArr[1]||0).toLocaleString()} บาท</li>
+                <li>เงินกิจกรรมพัฒนาคุณภาพผู้เรียน (ปัจจุบัน): ${Number(bgSrcArr[2]||0).toLocaleString()} บาท</li>
+                <li>เงินกิจกรรมพัฒนาคุณภาพผู้เรียน (อดีต): ${Number(bgSrcArr[3]||0).toLocaleString()} บาท</li>
+                <li>เงินรายได้สถานศึกษา: ${Number(bgSrcArr[4]||0).toLocaleString()} บาท</li>
+                <li>อื่นๆ (${bgSrcArr[5]||''}): ${Number(bgSrcArr[6]||0).toLocaleString()} บาท</li>
+            `;
+
+            let budgetHtml = "";
+            (p.budgetDetails || []).forEach(grp => {
+                budgetHtml += `<div class="mb-2"><b>${grp.groupName}</b><table class="table table-sm table-bordered mt-1"><thead class="table-light text-center"><tr><th>ประเภท</th><th>รายการ</th><th>รายละเอียด</th><th>จำนวน</th><th>ราคา/หน่วย</th><th>รวม(บาท)</th></tr></thead><tbody>`;
+                (grp.items || []).forEach(i => {
+                    budgetHtml += `<tr><td class="text-center">${i.type}</td><td class="text-start">${i.item}</td><td class="text-start">${i.desc||'-'}</td><td class="text-center">${i.qty}</td><td class="text-end">${Number(i.price||0).toLocaleString('th-TH')}</td><td class="text-end">${Number(i.total||0).toLocaleString('th-TH')}</td></tr>`;
+                });
+                budgetHtml += `<tr><td colspan="5" class="text-end fw-bold">รวมกลุ่มนี้</td><td class="text-end fw-bold">${Number(grp.groupTotal||0).toLocaleString('th-TH')}</td></tr></tbody></table></div>`;
+            });
+            document.getElementById('pdBudgetContainer').innerHTML = budgetHtml || "ไม่มีข้อมูล";
+
+            // วาดกราฟ Chart.js
             if(chartInstance) { chartInstance.destroy(); }
             let ctx = document.getElementById('budgetChart').getContext('2d');
             chartInstance = new Chart(ctx, {
@@ -1523,7 +1664,6 @@
                 
                 let bgSrcArr = p.generalInfo.bgSrc || []; 
                 
-                // คำนวณแยกปี
                 let bgCurrent = Number(bgSrcArr[0]||0) + Number(bgSrcArr[2]||0) + Number(bgSrcArr[4]||0) + Number(bgSrcArr[6]||0);
                 let bgPrevious = Number(bgSrcArr[1]||0) + Number(bgSrcArr[3]||0);
 
