@@ -23,6 +23,7 @@
             --purple-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             --bg-color: #f7f9fc;
         }
+        
         body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); margin: 0; color: #444; }
         
         /* Login Overlay */
@@ -175,13 +176,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqActProject" class="form-select" onchange="populateSubActivities('reqActProject', 'reqActSub')">
+                            <select id="reqActProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqActProject', 'reqActSub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqActSub" class="form-select">
+                            <select id="reqActSub" class="form-select select2-basic" style="width: 100%;">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -223,13 +224,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqBuyProject" class="form-select" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
+                            <select id="reqBuyProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqBuySub" class="form-select">
+                            <select id="reqBuySub" class="form-select select2-basic" style="width: 100%;">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -276,6 +277,7 @@
                     <h3 class="fw-bold">📊 ติดตามความคืบหน้าการใช้งบประมาณ</h3>
                 </div>
                 
+                <!-- กล่องแจ้งเตือนไตรมาส -->
                 <div id="quarterAlertContainer"></div>
 
                 <div class="card-3d p-4">
@@ -396,8 +398,8 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle text-center">
-                            <thead class="table-light"><tr><th>ปี พ.ศ.</th><th class="text-start">ชื่อโครงการ</th><th>ผู้รับผิดชอบ</th><th>ดูรายละเอียด</th><th id="thManageProj">จัดการ</th></tr></thead>
-                            <tbody id="projectTableBody"><tr><td colspan="5" class="text-center">คลิกโหลดข้อมูล</td></tr></tbody>
+                            <thead class="table-light"><tr><th>ปี พ.ศ.</th><th class="text-start">ชื่อโครงการ</th><th>ผู้รับผิดชอบ</th><th>สถานะ</th><th>ดูรายละเอียด</th><th id="thManageProj">จัดการ</th></tr></thead>
+                            <tbody id="projectTableBody"><tr><td colspan="6" class="text-center">คลิกโหลดข้อมูล</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -642,6 +644,9 @@
         // 🔴 อย่าลืมนำ URL Apps Script ของคุณครูมาใส่ตรงนี้ครับ
         const API_URL = "https://script.google.com/macros/s/AKfycbxDugbtkWAjboT8UU_HinYsE-osH2BBLxxcnk2xVecdYtTGdoLt5dyNqzuZPKGSwDaFog/exec"; 
         
+        // 🔴 ใส่ API KEY ของ Gemini 3.6 Flash ตรงนี้
+        const GEMINI_API_KEY = "ใส่_API_KEY_ของ_GEMINI_ที่นี่";
+        
         let allProjects = [];
         let calendarInstance;
         let chartInstance; 
@@ -765,7 +770,6 @@
                 document.getElementById('menu-approval-system').style.display = 'none';
                 document.getElementById('adminMenuSection').style.display = 'none';
                 
-                // ซ่อนปุ่มจัดการในตารางและเบิกจ่าย
                 document.getElementById('thManageProj').style.display = 'none';
                 document.getElementById('thManageExp').style.display = 'none';
                 document.getElementById('addExpenseBox').style.display = 'none';
@@ -1110,6 +1114,7 @@
             buildCheckboxDropdown('listTime', 'btnTime', terms, 'time'); 
             updateDropdownText('time', 'btnTime');
             
+            // ปรับ Label ตามชื่อแบบฟอร์มที่ระบุปีเป๊ะๆ
             if(document.getElementById('lblObec')) document.getElementById('lblObec').innerText = `5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
             if(document.getElementById('lblSpm')) document.getElementById('lblSpm').innerText = `6. สนองนโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
             if(document.getElementById('pLblObec')) document.getElementById('pLblObec').innerText = `5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570`;
@@ -1161,30 +1166,8 @@
             }
         }
 
-        function submitRequest(type) {
-            Swal.fire({
-                title: 'ยืนยันการส่งคำขอ?', text: "ข้อมูลจะถูกส่งไปยังงานนโยบายและแผน", icon: 'question', showCancelButton: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('สำเร็จ!', 'ส่งคำขออนุมัติเรียบร้อยแล้ว รอการตรวจสอบ', 'success');
-                    if(type==='activity') { 
-                        document.getElementById('reqActName').value = ""; 
-                        document.getElementById('reqActBudget').value = ""; 
-                        document.getElementById('reqActDetails').value = ""; 
-                    }
-                    if(type==='purchase') { 
-                        document.getElementById('reqBuyItem').value = ""; 
-                        document.getElementById('reqBuyReason').value = ""; 
-                    }
-                }
-            });
-        }
-
-        function calcReqBuy() {
-            document.getElementById('reqBuyTotal').value = (document.getElementById('reqBuyQty').value || 0) * (document.getElementById('reqBuyPrice').value || 0);
-        }
-
-        function analyzeRequestAI(type) {
+        // 🤖 ฟังก์ชันเรียก Gemini 3.6 Flash
+        async function analyzeRequestAI(type) {
             let budgetType, name, details;
             if(type === 'activity') {
                 budgetType = document.getElementById('reqActBudgetType').value;
@@ -1196,25 +1179,67 @@
                 details = document.getElementById('reqBuyItem').value;
             }
 
-            if(!budgetType || !name) { Swal.fire('ข้อมูลไม่ครบ', 'กรุณาเลือกประเภทเงินและกรอกรายละเอียดก่อนให้ AI วิเคราะห์', 'warning'); return; }
-
-            let textToAnalyze = (name + " " + details).toLowerCase();
-            let warnings = [];
-
-            if(budgetType.includes("กิจกรรมพัฒนาคุณภาพผู้เรียน")) {
-                let forbiddenWords = ['ครุภัณฑ์', 'ซ่อม', 'ก่อสร้าง', 'คอมพิวเตอร์', 'เครื่องพิมพ์', 'กระดาษ', 'ค่าไฟ', 'ค่าน้ำ'];
-                forbiddenWords.forEach(w => { if(textToAnalyze.includes(w)) warnings.push(`พบคำว่า "${w}" <br>ซึ่งอาจไม่สามารถใช้เงินกิจกรรมพัฒนาคุณภาพผู้เรียนได้ (เงินนี้เน้นจัดกิจกรรมตรงให้นักเรียน)`); });
-            } else if(budgetType.includes("อุดหนุนรายหัว")) {
-                let forbiddenWords = ['อาหารกลางวัน', 'เงินเดือน', 'ค่าจ้างครู'];
-                forbiddenWords.forEach(w => { if(textToAnalyze.includes(w)) warnings.push(`พบคำว่า "${w}" <br>ซึ่งปกติจะเบิกจากงบอื่น ไม่ใช่งบอุดหนุนรายหัวปกติ`); });
+            if(!budgetType || !name || !GEMINI_API_KEY.includes("AIza")) { 
+                Swal.fire('ข้อมูลไม่พร้อม', 'กรุณาใส่ข้อมูลให้ครบ และตรวจสอบการตั้งค่า Gemini API KEY', 'warning'); 
+                return; 
             }
 
-            if(warnings.length > 0) {
-                let ul = "<ul class='mt-2'>" + warnings.map(w => `<li class='text-start text-danger mb-2'>${w}</li>`).join('') + "</ul>";
-                Swal.fire({title: '🤖 AI วิเคราะห์พบความเสี่ยง', html: `การขอใช้งบประมาณอาจผิดระเบียบ:<br>${ul}<br><span class='text-muted fs-6'>กรุณาปรึกษางานพัสดุหรือนโยบายและแผนอีกครั้ง</span>`, icon: 'warning'});
-            } else {
-                Swal.fire({title: '🤖 AI วิเคราะห์เบื้องต้น', text: 'รายการนี้ดูสอดคล้องกับประเภทงบประมาณที่เลือก (ไม่มีคีย์เวิร์ดที่ขัดระเบียบ)', icon: 'success'});
+            Swal.fire({title: '🤖 Gemini กำลังวิเคราะห์...', html: 'กำลังตรวจสอบความถูกต้องตามระเบียบพัสดุ...', allowOutsideClick: false});
+            Swal.showLoading();
+
+            const promptText = `คุณคือผู้เชี่ยวชาญด้านแผนงานและงบประมาณโรงเรียนรัฐบาลไทย
+            มีผู้เสนอขอเบิกงบประมาณดังนี้:
+            - แหล่งเงินที่ใช้: "${budgetType}"
+            - ชื่อรายการ/กิจกรรม: "${name}"
+            - รายละเอียดสิ่งที่จัดซื้อ/ดำเนินการ: "${details}"
+            
+            จงวิเคราะห์ว่าการใช้เงินประเภทนี้ เหมาะสมและถูกต้องตามระเบียบหรือไม่? (เช่น เงินกิจกรรมพัฒนาคุณภาพผู้เรียน ห้ามนำไปซื้อครุภัณฑ์ อุปกรณ์สำนักงานจ่ายแจก หรือจ่ายค่าสาธารณูปโภค) 
+            ตอบสั้นๆ ชัดเจน 2-3 ประโยค ว่า "เหมาะสม" หรือ "มีความเสี่ยงผิดระเบียบ" พร้อมบอกเหตุผลสั้นๆ`;
+
+            try {
+                // 🔴 อัปเดต Model เป็น gemini-3.6-flash แล้วครับ
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                
+                const result = await response.json();
+                const aiReply = result.candidates[0].content.parts[0].text;
+                
+                let icon = aiReply.includes("ความเสี่ยง") || aiReply.includes("ผิดระเบียบ") ? 'warning' : 'success';
+                Swal.fire({ title: '🤖 ผลวิเคราะห์จาก Gemini 3.6 Flash', html: `<div class="text-start">${aiReply}</div>`, icon: icon });
+
+            } catch (error) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ Gemini API ได้', 'error');
             }
+        }
+
+        function submitRequest(type) {
+            Swal.fire({
+                title: 'ยืนยันการส่งคำขอ?', text: "ข้อมูลจะถูกส่งและแจ้งเตือนไปยังแอดมินผ่าน Telegram", icon: 'question', showCancelButton: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let itemName = type === 'activity' ? document.getElementById('reqActName').value : document.getElementById('reqBuyItem').value;
+                    let budget = type === 'activity' ? document.getElementById('reqActBudget').value : document.getElementById('reqBuyTotal').value;
+                    let user = localStorage.getItem('userName') || "ผู้ใช้งาน";
+                    let reqTypeStr = type === 'activity' ? "ขออนุมัติจัดกิจกรรม" : "ขอจัดซื้อ/จัดจ้าง";
+
+                    // แจ้งเตือนไปที่ Telegram
+                    fetch(API_URL, {
+                        method: "POST",
+                        body: JSON.stringify({ action: "notify_telegram", reqType: reqTypeStr, itemName: itemName, budget: budget, user: user })
+                    });
+
+                    Swal.fire('สำเร็จ!', 'ส่งคำขออนุมัติเรียบร้อยแล้ว แอดมินได้รับแจ้งเตือนแล้ว', 'success');
+                    if(type==='activity') { document.getElementById('reqActName').value = ""; document.getElementById('reqActBudget').value = ""; document.getElementById('reqActDetails').value = ""; }
+                    if(type==='purchase') { document.getElementById('reqBuyItem').value = ""; document.getElementById('reqBuyReason').value = ""; }
+                }
+            });
+        }
+
+        function calcReqBuy() {
+            document.getElementById('reqBuyTotal').value = (document.getElementById('reqBuyQty').value || 0) * (document.getElementById('reqBuyPrice').value || 0);
         }
 
         // ================= 7. Dynamic Form Elements =================
@@ -1406,7 +1431,7 @@
         }
 
         function loadProjects() {
-            document.getElementById('projectTableBody').innerHTML = `<tr><td colspan="5" class="text-center">กำลังโหลด...</td></tr>`;
+            document.getElementById('projectTableBody').innerHTML = `<tr><td colspan="6" class="text-center">กำลังโหลด...</td></tr>`;
             fetch(API_URL).then(res => res.json()).then(result => {
                 allProjects = result.data;
                 let year = document.getElementById('filterYear').value;
@@ -1414,26 +1439,48 @@
                 if(year !== 'all') {
                     filtered = allProjects.filter(p => p.year == year);
                 }
+                
                 let html = "";
                 let role = localStorage.getItem('userRole');
                 
                 filtered.forEach(p => {
+                    let statusBadge = "";
+                    let statusColor = "secondary";
+                    if(p.status === "รออนุมัติ") statusColor = "warning text-dark";
+                    if(p.status === "กำลังดำเนินการ") statusColor = "primary";
+                    if(p.status === "เสร็จสิ้น") statusColor = "success";
+                    if(p.status === "ยกเลิก") statusColor = "danger";
+
+                    if(role === 'plan' || role === 'admin') {
+                        statusBadge = `
+                        <select class="form-select form-select-sm bg-${statusColor} text-white border-0" onchange="changeProjectStatus('${p.id}', this.value)" style="width: 130px; font-weight:bold;">
+                            <option value="รออนุมัติ" ${p.status==='รออนุมัติ'?'selected':''}>รออนุมัติ</option>
+                            <option value="กำลังดำเนินการ" ${p.status==='กำลังดำเนินการ'?'selected':''}>กำลังดำเนินการ</option>
+                            <option value="เสร็จสิ้น" ${p.status==='เสร็จสิ้น'?'selected':''}>เสร็จสิ้น</option>
+                            <option value="ยกเลิก" ${p.status==='ยกเลิก'?'selected':''}>ยกเลิก</option>
+                        </select>`;
+                    } else {
+                        statusBadge = `<span class="badge bg-${statusColor} p-2">${p.status}</span>`;
+                    }
+
                     let manageBtn = "";
                     if(role !== 'guest') {
                         manageBtn = `<td>
-                            <button class="btn btn-sm btn-warning" onclick="editProject('${p.id}')">แก้ไข</button> 
-                            <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')">ลบ</button>
+                            <button class="btn btn-sm btn-warning w-100 mb-1" onclick="editProject('${p.id}')">แก้ไข</button> 
+                            <button class="btn btn-sm btn-danger w-100" onclick="deleteProject('${p.id}')">ลบ</button>
                         </td>`;
                     }
+                    
                     html += `<tr>
                         <td>${p.year}</td>
                         <td class="text-start">${p.projectName}</td>
                         <td>${(p.manager||[]).join(', ')}</td>
+                        <td>${statusBadge}</td>
                         <td><button class="btn btn-sm btn-outline-info" onclick="viewProjectDetails('${p.id}')"><i class="fas fa-eye"></i> ดูรายละเอียด</button></td>
                         ${manageBtn}
                     </tr>`;
                 });
-                document.getElementById('projectTableBody').innerHTML = html || `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+                document.getElementById('projectTableBody').innerHTML = html || `<tr><td colspan="6" class="text-center">ไม่มีข้อมูล</td></tr>`;
                 
                 renderCalendarEvents();
                 if(document.getElementById('page-budget').style.display === 'block') loadBudgetTracking();
@@ -1463,7 +1510,6 @@
             }
             document.getElementById('pdActivities').innerHTML = actsHtml;
 
-            // วาดกราฟ Chart.js
             if(chartInstance) { chartInstance.destroy(); }
             let ctx = document.getElementById('budgetChart').getContext('2d');
             chartInstance = new Chart(ctx, {
@@ -1490,9 +1536,13 @@
             if(!document.getElementById('fConsent').checked) { Swal.fire('แจ้งเตือน', 'กรุณากดยอมรับการเผยแพร่ข้อมูลก่อนบันทึก', 'warning'); return; }
 
             let existingExpenses = [];
+            let status = "รออนุมัติ";
             if(document.getElementById('formId').value) {
                 let p = allProjects.find(x => x.id === document.getElementById('formId').value);
-                if(p && p.generalInfo && p.generalInfo.expenses) existingExpenses = p.generalInfo.expenses;
+                if(p) {
+                    if(p.generalInfo && p.generalInfo.expenses) existingExpenses = p.generalInfo.expenses;
+                    if(p.status) status = p.status;
+                }
             }
 
             let kpis = [], risks = [], cals = [], pdcaGroups = [], budgets = [];
@@ -1520,7 +1570,7 @@
             });
 
             const data = {
-                action: "save", id: document.getElementById('formId').value, year: document.getElementById('fYear').value, projectName: document.getElementById('fName').value, department: document.getElementById('fDept').value, subDept: document.getElementById('fSubDept').value, projType: document.getElementById('fProjType').value, manager: getCheckedValues('manager'), time: getCheckedValues('time'), budgetTotal: document.getElementById('fTotalBudget').value,
+                action: "save", id: document.getElementById('formId').value, year: document.getElementById('fYear').value, projectName: document.getElementById('fName').value, department: document.getElementById('fDept').value, subDept: document.getElementById('fSubDept').value, projType: document.getElementById('fProjType').value, manager: getCheckedValues('manager'), time: getCheckedValues('time'), budgetTotal: document.getElementById('fTotalBudget').value, status: status,
                 generalInfo: { 
                     activities: getActivities(), reason: document.getElementById('fReason').value, obj: getListData('objBody'), goalQun: getListData('goalQunBody'), goalQual: getListData('goalQualBody'), target: document.getElementById('fTarget').value, kpis: kpis, risks: risks, bgSrc: [$('#fBgSrc1').val(), $('#fBgSrc2').val(), $('#fBgSrc3').val(), $('#fBgSrc4').val(), $('#fBgSrc5').val(), $('#fBgSrc6Name').val(), $('#fBgSrc6').val()], stdSchool: getCheckedValues('stdSchool'), stdOnesqa: getCheckedValues('stdOnesqa'), stdObec: getCheckedValues('stdObec'), stdSpm: getCheckedValues('stdSpm'), stdStrategy: getCheckedValues('stdStrategy'), signature: document.getElementById('fSigBase64').value, expenses: existingExpenses
                 },
@@ -1529,6 +1579,18 @@
 
             Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false}); Swal.showLoading();
             fetch(API_URL, { method: "POST", body: JSON.stringify(data) }).then(res => res.json()).then(res => { Swal.fire('สำเร็จ', res.message, 'success'); loadProjects(); });
+        }
+
+        function changeProjectStatus(id, newStatus) {
+            Swal.fire({title: 'กำลังอัปเดตสถานะ...', allowOutsideClick: false}); Swal.showLoading();
+            fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({action: "update_status", id: id, status: newStatus}) 
+            }).then(res => res.json()).then(res => { 
+                Swal.fire({title: 'สำเร็จ', text: 'เปลี่ยนสถานะโครงการแล้ว', icon: 'success', timer: 1000, showConfirmButton: false});
+                let p = allProjects.find(x => x.id === id); if(p) p.status = newStatus;
+                loadProjects(); 
+            });
         }
 
         function editProject(id) {
@@ -1621,7 +1683,7 @@
                 
                 let bgSrcArr = p.generalInfo.bgSrc || []; 
                 
-                // คำนวณแยกปีงบ
+                // คำนวณแยกปี
                 let bgCurrent = Number(bgSrcArr[0]||0) + Number(bgSrcArr[2]||0) + Number(bgSrcArr[4]||0) + Number(bgSrcArr[6]||0);
                 let bgPrevious = Number(bgSrcArr[1]||0) + Number(bgSrcArr[3]||0);
 
