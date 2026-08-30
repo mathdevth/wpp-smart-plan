@@ -23,7 +23,6 @@
             --purple-grad: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             --bg-color: #f7f9fc;
         }
-        
         body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); margin: 0; color: #444; }
         
         /* Login Overlay */
@@ -176,13 +175,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqActProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqActProject', 'reqActSub')">
+                            <select id="reqActProject" class="form-select" onchange="populateSubActivities('reqActProject', 'reqActSub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqActSub" class="form-select select2-basic" style="width: 100%;">
+                            <select id="reqActSub" class="form-select">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -207,7 +206,7 @@
                         <div class="col-md-6"><label class="form-label">วันที่เริ่ม</label><input type="date" id="reqActStart" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">วันที่สิ้นสุด</label><input type="date" id="reqActEnd" class="form-control"></div>
                         <div class="col-md-6"><label class="form-label">งบประมาณที่ขออนุมัติ (บาท)</label><input type="number" id="reqActBudget" class="form-control" placeholder="0"></div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqActUser" class="form-control" readonly></div>
                         
                         <div class="col-md-12 mt-4 text-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('activity')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
@@ -224,13 +223,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">เลือกโครงการที่อ้างอิง</label>
-                            <select id="reqBuyProject" class="form-select select2-basic" style="width: 100%;" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
+                            <select id="reqBuyProject" class="form-select" onchange="populateSubActivities('reqBuyProject', 'reqBuySub')">
                                 <option value="">-- เลือกโครงการ --</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">เลือกกิจกรรมย่อย</label>
-                            <select id="reqBuySub" class="form-select select2-basic" style="width: 100%;">
+                            <select id="reqBuySub" class="form-select">
                                 <option value="">-- กรุณาเลือกโครงการก่อน --</option>
                             </select>
                         </div>
@@ -262,7 +261,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">ผู้ขออนุมัติ</label><input type="text" id="reqBuyUser" class="form-control" readonly></div>
                         <div class="col-md-6 text-end align-self-end">
                             <button class="btn btn-outline-success me-2" onclick="analyzeRequestAI('purchase')"><i class="fas fa-robot"></i> AI ตรวจสอบความถูกต้องของงบ</button>
                             <button class="btn btn-3d btn-pink px-5" onclick="submitRequest('purchase')">ส่งคำขอจัดซื้อ/จัดจ้าง</button>
@@ -277,7 +276,6 @@
                     <h3 class="fw-bold">📊 ติดตามความคืบหน้าการใช้งบประมาณ</h3>
                 </div>
                 
-                <!-- กล่องแจ้งเตือนไตรมาส -->
                 <div id="quarterAlertContainer"></div>
 
                 <div class="card-3d p-4">
@@ -411,7 +409,6 @@
                     <h3 class="fw-bold">📝 แบบเสนอโครงการ (ผง.01)</h3>
                     <div>
                         <button class="btn btn-3d btn-pink px-4 me-2" onclick="saveProject()"><i class="fas fa-save"></i> บันทึก</button>
-                        <!-- ซ่อนการพิมพ์ไปก่อน รอทำ Word -->
                         <button class="btn btn-3d btn-secondary px-4" disabled><i class="fas fa-file-word"></i> ส่งออก Word (กำลังพัฒนา)</button>
                     </div>
                 </div>
@@ -665,6 +662,20 @@
             { group: "รายชื่อบุคลากร", items: ["นางสาวสมใจ จันทรงกรด", "นางสาวพิมลพรรณ ไตรรักษ์", "นายกิตติธัช สีหะวงษ์", "นายพิสันต์ สายโรจน์", "นางสาวนลินี กาศแสวง", "นางสาวศิริวรรณ พานตะสี", "นางสาวนฤมล มะลิเทิน", "นางสาวสุนิสา ชวนยิ้ม", "นายอชิตพล บุณรัตน์", "นายกิตติศักดิ์ รัตนชัย", "นายพรพิพัฒน์ สุทธิธรรม", "นายศรายุทธ แสนเกียง", "นางภัทรหทัย ทองอยู่", "นางสาววรกานต์ อาคม", "นางสาวลลิตา ภู่ประเสริฐ", "นายสมชาติ วิโรจน์พิพัฒน์", "นายสาคร กลิ่นหอม"] }
         ];
 
+        // ฐานข้อมูลตัวชี้วัด (โรงเรียน + สมศ.)
+        const optionData = {
+            school: [
+                { group: "มาตรฐานที่ 1 คุณภาพของผู้เรียน", items: ["ตัวชี้วัดที่ 1.1(1) มีความสามารถในการอ่าน การเขียน การสื่อสาร และการคิดคำนวณ", "ตัวชี้วัดที่ 1.1(2) มีความสามารถในการคิดวิเคราะห์ คิดอย่างมีวิจารณญาณ อภิปรายแลกเปลี่ยนความคิดเห็น และแก้ปัญหา", "ตัวชี้วัดที่ 1.1(3) มีความสามารถในการสร้างนวัตกรรม", "ตัวชี้วัดที่ 1.1(4) มีความสามารถในการใช้เทคโนโลยีสารสนเทศและการสื่อสาร", "ตัวชี้วัดที่ 1.1(5) มีผลสัมฤทธิ์ทางการเรียนตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.1(6) มีความรู้ ทักษะพื้นฐาน และเจตคติที่ดีต่องานอาชีพ", "ตัวชี้วัดที่ 1.2(1) การมีคุณลักษณะและค่านิยมที่ดีตามที่สถานศึกษากำหนด", "ตัวชี้วัดที่ 1.2(2) ความภูมิใจในท้องถิ่นและความเป็นไทย", "ตัวชี้วัดที่ 1.2(3) การยอมรับที่จะอยู่ร่วมกันบนความแตกต่างและหลากหลาย", "ตัวชี้วัดที่ 1.2(4) สุขภาวะทางร่างกาย และจิตสังคม"] },
+                { group: "มาตรฐานที่ 2 กระบวนการบริหารและการจัดการ", items: ["ตัวชี้วัดที่ 2.1 มีเป้าหมายวิสัยทัศน์และพันธกิจที่สถานศึกษากำหนดชัดเจน", "ตัวชี้วัดที่ 2.2 มีระบบบริหารจัดการคุณภาพของสถานศึกษา", "ตัวชี้วัดที่ 2.3 ดำเนินงานพัฒนาวิชาการที่เน้นคุณภาพผู้เรียนรอบด้านตามหลักสูตรสถานศึกษา และทุกกลุ่มเป้าหมาย", "ตัวชี้วัดที่ 2.4 พัฒนาครูและบุคลากรให้มีความเชี่ยวชาญทางวิชาชีพ", "ตัวชี้วัดที่ 2.5 จัดสภาพแวดล้อมทางกายภาพและสังคมที่เอื้อต่อการจัดการเรียนรู้อย่างมีคุณภาพ", "ตัวชี้วัดที่ 2.6 จัดระบบเทคโนโลยีสารสนเทศเพื่อสนับสนุนการบริหารจัดการและการจัดการเรียนรู้"] },
+                { group: "มาตรฐานที่ 3 กระบวนการจัดการเรียนการสอนที่เน้นผู้เรียนเป็นสำคัญ", items: ["ตัวชี้วัดที่ 3.1 จัดการเรียนรู้ผ่านกระบวนการคิดและปฏิบัติจริง และสามารถนำไปประยุกต์ใช้ในชีวิตได้", "ตัวชี้วัดที่ 3.2 ใช้สื่อ เทคโนโลยีสารสนเทศและแหล่งเรียนรู้ที่เอื้อต่อการเรียนรู้", "ตัวชี้วัดที่ 3.3 มีการบริหารจัดการชั้นเรียนเชิงบวก", "ตัวชี้วัดที่ 3.4 ตรวจสอบและประเมินผู้เรียนอย่างเป็นระบบและนำผลมาพัฒนาผู้เรียน", "ตัวชี้วัดที่ 3.5 มีการแลกเปลี่ยนเรียนรู้และให้ข้อมูลสะท้อนกลับเพื่อพัฒนาและปรับปรุงการจัดการเรียนรู้"] }
+            ],
+            onesqa: [
+                { group: "มาตรฐานที่ 1 ผลลัพธ์ของการเรียนรู้", items: ["ตัวชี้วัดที่ 1.1 ผู้เรียนมีสมรรถนะตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.2 ผู้เรียนมีคุณลักษณะที่พึงประสงค์ตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.3 ผู้เรียนสามารถนำตนเองในการเรียนรู้"] },
+                { group: "มาตรฐานที่ 2 การพัฒนาคุณภาพการบริหารจัดการสถานศึกษา", items: ["ตัวชี้วัดที่ 2.1 วิสัยทัศน์ พันธกิจ และค่านิยมของสถานศึกษา", "ตัวชี้วัดที่ 2.2 นโยบาย ทิศทาง กลยุทธ์และแผนงานสอดคล้องกับวิสัยทัศน์และพันธกิจ", "ตัวชี้วัดที่ 2.3 ผู้บริหารสถานศึกษามีภาวะผู้นำทางวิชาการและบริหารจัดการด้วยหลักธรรมาภิบาล", "ตัวชี้วัดที่ 2.4 แผนงานและการดำเนินงานด้านการพัฒนาครูและบุคลากรทางการศึกษา", "ตัวชี้วัดที่ 2.5 กระบวนการนิเทศการปฏิบัติงานของครูและบุคลากรทางการศึกษาอย่างเป็นระบบ", "ตัวชี้วัดที่ 2.6 การใช้สื่อ อุปกรณ์ ระบบเทคโนโลยีเพื่อสนับสนุนการจัดการศึกษา", "ตัวชี้วัดที่ 2.7 การจัดสภาพแวดล้อม อาคารสถานที่ ปลอดภัยและถูกสุขลักษณะ", "ตัวชี้วัดที่ 2.8 สวัสดิการ สวัสดิภาพ แนวทางการป้องกันโรค อุบัติภัย ภัยพิบัติ", "ตัวชี้วัดที่ 2.9 ระบบและกระบวนการช่วยเหลือผู้เรียน", "ตัวชี้วัดที่ 2.10 การเสริมสร้างเครือข่ายผู้ปกครอง องค์กร และชุมชน เพื่อความร่วมมือในการสนับสนุนการจัดการเรียนรู้และพัฒนาผู้เรียน"] },
+                { group: "มาตรฐานที่ 3 การพัฒนาคุณภาพการจัดการเรียนรู้", items: ["ตัวชี้วัดที่ 3.1 การออกแบบหลักสูตรและแผนการจัดการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.2 การจัดกิจกรรมการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.3 ครูวัดและประเมินผลการเรียนรู้ของผู้เรียน อย่างเป็นระบบและต่อเนื่อง"] }
+            ]
+        };
+
         // ================= 1. Login & Roles =================
         function togglePasswordForm() {
             let loginSec = document.getElementById('loginFormSection');
@@ -679,6 +690,7 @@
         function performLogin() {
             let email = document.getElementById('loginEmail').value;
             let password = document.getElementById('loginPassword').value;
+            
             if(!email || !password) { Swal.fire('Error', 'กรุณากรอกอีเมลและรหัสผ่าน', 'error'); return; }
             
             Swal.fire({title: 'กำลังตรวจสอบ...', allowOutsideClick: false}); Swal.showLoading();
@@ -753,12 +765,16 @@
                 document.getElementById('menu-approval-system').style.display = 'none';
                 document.getElementById('adminMenuSection').style.display = 'none';
                 
-                // ซ่อนปุ่มจัดการในตาราง
+                // ซ่อนปุ่มจัดการในตารางและเบิกจ่าย
                 document.getElementById('thManageProj').style.display = 'none';
+                document.getElementById('thManageExp').style.display = 'none';
+                document.getElementById('addExpenseBox').style.display = 'none';
             } else {
                 document.getElementById('menu-project-management').style.display = 'block';
                 document.getElementById('menu-approval-system').style.display = 'block';
                 document.getElementById('thManageProj').style.display = 'table-cell';
+                document.getElementById('thManageExp').style.display = 'table-cell';
+                document.getElementById('addExpenseBox').style.display = 'block';
                 
                 if(role === 'plan' || role === 'admin') {
                     document.getElementById('adminMenuSection').style.display = 'block';
@@ -849,6 +865,12 @@
 
         // ================= 4. Settings & Policies Defaults =================
         function loadSettings() {
+            // ล้าง Cache นโยบาย หากเป็นเวอร์ชันก่อนหน้า
+            if (localStorage.getItem('appVersion') !== '1.3') {
+                ['setObec', 'setSpm', 'setStrategy'].forEach(id => localStorage.removeItem(id));
+                localStorage.setItem('appVersion', '1.3');
+            }
+
             document.getElementById('setHeadAcademic').value = localStorage.getItem('setHeadAcademic') || "นางสาวเมธาวี อุทัศน์";
             document.getElementById('setHeadGeneral').value = localStorage.getItem('setHeadGeneral') || "นายพิสันต์ สายโรจน์";
             document.getElementById('setHeadHR').value = localStorage.getItem('setHeadHR') || "นางสาวพิมลพรรณ ไตรรักษ์";
@@ -1032,7 +1054,6 @@
         }
 
         function reloadPolicyDropdowns() {
-            // โหลดข้อมูลตัวเลือก checkbox ของนโยบาย
             let arrObec = document.getElementById('setObec').value.split('\n').filter(x => x.trim());
             let arrSpm = document.getElementById('setSpm').value.split('\n').filter(x => x.trim());
             let arrStrategy = document.getElementById('setStrategy').value.split('\n').filter(x => x.trim());
@@ -1051,8 +1072,10 @@
                 let items = group.items || group;
                 items.forEach(item => {
                     idx++; let uniqueId = `chk_${listId}_${idx}`;
+                    // ป้องกันเครื่องหมายคำพูดพัง HTML
+                    let safeValue = item.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                     html += `<div class="form-check px-3 py-1 custom-check-item m-0">
-                        <input class="form-check-input chk-${nameAttr}" type="checkbox" value="${item}" id="${uniqueId}" onchange="updateDropdownText('${nameAttr}', '${btnId}')">
+                        <input class="form-check-input chk-${nameAttr}" type="checkbox" value="${safeValue}" id="${uniqueId}" onchange="updateDropdownText('${nameAttr}', '${btnId}')">
                         <label class="form-check-label w-100" style="cursor:pointer; font-size: 0.95rem;" for="${uniqueId}">${item}</label>
                     </div>`;
                 });
@@ -1065,9 +1088,9 @@
             let checked = document.querySelectorAll(`.chk-${nameAttr}:checked`);
             let btnText = document.querySelector(`#${btnId} .dropdown-text`);
             if(!btnText) return;
-            if (checked.length === 0) { btnText.innerHTML = "คลิกเพื่อเลือก..."; btnText.classList.add('text-muted'); }
-            else if (checked.length === 1) { btnText.innerHTML = checked[0].value; btnText.classList.remove('text-muted'); }
-            else { btnText.innerHTML = `เลือกแล้ว ${checked.length} รายการ`; btnText.classList.remove('text-muted'); }
+            if (checked.length === 0) { btnText.textContent = "คลิกเพื่อเลือก..."; btnText.classList.add('text-muted'); }
+            else if (checked.length === 1) { btnText.textContent = checked[0].value; btnText.classList.remove('text-muted'); }
+            else { btnText.textContent = `เลือกแล้ว ${checked.length} รายการ`; btnText.classList.remove('text-muted'); }
         }
 
         function getCheckedValues(nameAttr) {
@@ -1598,7 +1621,7 @@
                 
                 let bgSrcArr = p.generalInfo.bgSrc || []; 
                 
-                // คำนวณแยกปี
+                // คำนวณแยกปีงบ
                 let bgCurrent = Number(bgSrcArr[0]||0) + Number(bgSrcArr[2]||0) + Number(bgSrcArr[4]||0) + Number(bgSrcArr[6]||0);
                 let bgPrevious = Number(bgSrcArr[1]||0) + Number(bgSrcArr[3]||0);
 
