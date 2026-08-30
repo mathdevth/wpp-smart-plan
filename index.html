@@ -1115,15 +1115,25 @@
         }
 
         async function analyzeRequestAI(type) {
-            let budgetType, name, details;
+            let budgetType, name, details, budget, projName, subAct;
             if(type === 'activity') {
                 budgetType = document.getElementById('reqActBudgetType').value;
                 name = document.getElementById('reqActName').value;
                 details = document.getElementById('reqActDetails') ? document.getElementById('reqActDetails').value : "";
+                budget = document.getElementById('reqActBudget').value;
+                let projId = document.getElementById('reqActProject').value;
+                let projObj = allProjects.find(x => x.id === projId);
+                projName = projObj ? projObj.projectName : "";
+                subAct = document.getElementById('reqActSub').value;
             } else {
                 budgetType = document.getElementById('reqBuyBudgetType').value;
                 name = document.getElementById('reqBuyReason').value;
                 details = document.getElementById('reqBuyItem').value;
+                budget = document.getElementById('reqBuyTotal').value;
+                let projId = document.getElementById('reqBuyProject').value;
+                let projObj = allProjects.find(x => x.id === projId);
+                projName = projObj ? projObj.projectName : "";
+                subAct = document.getElementById('reqBuySub').value;
             }
 
             if(!budgetType || !name) { 
@@ -1131,22 +1141,30 @@
                 return; 
             }
 
-            Swal.fire({title: '🤖 Gemini 3.6 กำลังวิเคราะห์...', html: 'กำลังตรวจสอบความถูกต้องตามระเบียบพัสดุ...', allowOutsideClick: false});
+            Swal.fire({title: '🤖 ผู้ตรวจแผนงานกำลังตรวจสอบ...', html: 'กำลังเทียบเคียงระเบียบเล่มแนวทางปี 2569 และความสอดคล้องของโครงการ...', allowOutsideClick: false});
             Swal.showLoading();
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'analyze_ai', budgetType: budgetType, name: name, details: details })
+                    body: JSON.stringify({ 
+                        action: 'analyze_ai', 
+                        budgetType: budgetType, 
+                        name: name, 
+                        details: details,
+                        budget: budget,
+                        projectName: projName,
+                        subActivity: subAct
+                    })
                 });
                 const result = await response.json();
                 
                 if(result.status === 'success') {
                     const aiReply = result.reply;
-                    let icon = aiReply.includes("ความเสี่ยง") || aiReply.includes("ผิดระเบียบ") ? 'warning' : 'success';
-                    Swal.fire({ title: '🤖 ผลวิเคราะห์จาก Gemini 3.6 Flash', html: `<div class="text-start">${aiReply}</div>`, icon: icon });
+                    let icon = aiReply.includes("เหมาะสม") && !aiReply.includes("ไม่") ? 'success' : 'warning';
+                    Swal.fire({ title: '🤖 ผลตรวจสอบจากผู้ตรวจแผนงาน AI', html: `<div class="text-start">${aiReply}</div>`, icon: icon });
                 } else {
-                    Swal.fire('ข้อผิดพลาด', result.message || 'ไม่สามารถเชื่อมต่อ Gemini API ได้ โปรดเช็คการตั้งค่าคีย์ที่ Apps Script', 'error');
+                    Swal.fire('ข้อผิดพลาด', result.message || 'ไม่สามารถเชื่อมต่อ Gemini API ได้', 'error');
                 }
             } catch (error) {
                 Swal.fire('ข้อผิดพลาด', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
