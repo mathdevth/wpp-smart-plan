@@ -895,13 +895,20 @@
         // ================= 3. Calendar =================
         function initCalendar(projectEvents = []) {
             var calendarEl = document.getElementById('calendar');
+            
+            // [จุดที่แก้บั๊ก] ลบปฏิทินเก่าทิ้งก่อนสร้างใหม่ ชัวร์ที่สุด 100%
             if(calendarInstance) {
-                calendarInstance.removeAllEvents();
-                calendarInstance.addEventSource([...publicHolidays, ...projectEvents]);
-                return;
+                calendarInstance.destroy(); 
             }
+            
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', locale: 'th',
+                initialView: 'dayGridMonth', 
+                locale: 'th',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listMonth'
+                },
                 events: [...publicHolidays, ...projectEvents]
             });
             calendarInstance.render();
@@ -910,19 +917,31 @@
         function renderCalendarEvents() {
             let events = [];
             allProjects.forEach(p => {
-                if(p.calendar) {
+                if(p.calendar && Array.isArray(p.calendar)) {
                     p.calendar.forEach(c => {
-                        if(c.start) {
-                            let endObj = new Date(c.end || c.start); endObj.setDate(endObj.getDate() + 1);
+                        // เช็คว่ามีการใส่วันที่และชื่องานไว้หรือไม่
+                        if(c.start && c.task) {
+                            
+                            // [จุดที่แก้บั๊ก] จัดการโซนเวลาใหม่ ป้องกันการบวกวันแล้วเพี้ยน
+                            let endStr = c.end || c.start;
+                            let d = new Date(endStr);
+                            d.setDate(d.getDate() + 1); // บวกเพิ่ม 1 วัน (กติกาของระบบปฏิทิน FullCalendar)
+                            let nextDayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                            
                             let mgr = (p.manager && p.manager.length > 0) ? p.manager[0] : 'ไม่ระบุ';
-                            events.push({ title: `${c.task} [${mgr}]`, start: c.start, end: endObj.toISOString().split('T')[0], color: '#3498db' });
+                            
+                            events.push({ 
+                                title: `${c.task} [${mgr}]`, 
+                                start: c.start, 
+                                end: nextDayStr, 
+                                color: '#3498db' 
+                            });
                         }
                     });
                 }
             });
             initCalendar(events);
         }
-
         // ================= 4. Settings =================
         function loadSettings() {
             if (localStorage.getItem('appVersion') !== '1.3') {
@@ -1052,12 +1071,16 @@
             document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
             if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('active');
             
+            // [จุดที่แก้บั๊ก] บังคับให้ปฏิทินวาดตัวเองใหม่เวลาสลับกลับมาหน้านี้
+            if(pageId === 'dashboard') {
+                if(calendarInstance) { setTimeout(() => calendarInstance.render(), 100); }
+            }
+
             if(pageId === 'budget') loadBudgetTracking();
             
             if(pageId === 'req-activity' || pageId === 'req-purchase') {
                 populateReqProjects();
-                // ดึงชื่อผู้ใช้อีกรอบเพื่อความแน่ใจ
-                let currentName = localStorage.getItem('userName') || localStorage.getItem('userEmail');
+                let currentName = localStorage.getItem('userName') || localStorage.getItem('userEmail') || "ไม่ระบุชื่อ";
                 if(document.getElementById('reqActUser')) document.getElementById('reqActUser').value = currentName;
                 if(document.getElementById('reqBuyUser')) document.getElementById('reqBuyUser').value = currentName;
             }
