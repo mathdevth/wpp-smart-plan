@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Plan WPP - นโยบายและแผน</title>
     
-    <!-- CSS & Libraries -->
+    <!-- CSS & Libraries (บังคับโหลดให้เสร็จก่อน) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-    
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -379,9 +380,9 @@
                     <h5 class="fw-bold text-primary mb-3">3. ตั้งค่านโยบายที่ตอบสนอง</h5>
                     <span class="hint-text mb-3">คำแนะนำ: พิมพ์ 1 นโยบาย ต่อ 1 บรรทัด เพื่อให้ระบบนำไปสร้างเป็นตัวเลือกอัตโนมัติ</span>
                     <div class="row g-3">
-                        <div class="col-md-12"><label class="form-label fw-bold">นโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><textarea id="setObec" class="form-control" rows="8"></textarea></div>
-                        <div class="col-md-12"><label class="form-label fw-bold">นโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><textarea id="setSpm" class="form-control" rows="8"></textarea></div>
-                        <div class="col-md-12"><label class="form-label fw-bold">กลยุทธ์ของโรงเรียน (พ.ศ. 2568 - 2570)</label><textarea id="setStrategy" class="form-control" rows="5"></textarea></div>
+                        <div class="col-md-12"><label class="form-label fw-bold">นโยบายและจุดเน้นของ สพฐ.</label><textarea id="setObec" class="form-control" rows="8"></textarea></div>
+                        <div class="col-md-12"><label class="form-label fw-bold">นโยบายของ สพม.พล.อต.</label><textarea id="setSpm" class="form-control" rows="8"></textarea></div>
+                        <div class="col-md-12"><label class="form-label fw-bold">กลยุทธ์ของโรงเรียน</label><textarea id="setStrategy" class="form-control" rows="5"></textarea></div>
                     </div>
                 </div>
             </div>
@@ -462,9 +463,9 @@
                             <div class="row g-3">
                                 <div class="col-md-12"><label class="form-label">3. สนองมาตรฐานการศึกษาของสถานศึกษา</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSchool"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSchool"></div></div></div>
                                 <div class="col-md-12"><label class="form-label">4. สนองตัวชี้วัดการประกันคุณภาพภายนอก (สมศ.)</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdOnesqa"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdOnesqa"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
-                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต. ประจำปีงบประมาณ พ.ศ. 2569-2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
-                                <div class="col-md-12"><label class="form-label">7. กลยุทธ์ของโรงเรียน ตามแผนพัฒนาคุณภาพสถานศึกษา ประจำปีงบประมาณ 2568 - 2570</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblObec">5. สนองนโยบายและจุดเน้นของ สพฐ.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdObec"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdObec"></div></div></div>
+                                <div class="col-md-12"><label class="form-label" id="lblSpm">6. สนองนโยบายของ สพม.พล.อต.</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdSpm"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdSpm"></div></div></div>
+                                <div class="col-md-12"><label class="form-label">7. กลยุทธ์ของโรงเรียน</label><div class="dropdown"><button class="form-control text-start d-flex justify-content-between align-items-center bg-white" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="btnStdStrategy"><span class="dropdown-text text-muted text-truncate" style="max-width: 95%;">คลิกเพื่อเลือก...</span><i class="fas fa-chevron-down text-muted"></i></button><div class="dropdown-menu w-100 p-2 shadow" style="max-height: 300px; overflow-y: auto;" id="listStdStrategy"></div></div></div>
                             </div>
                         </div>
 
@@ -507,7 +508,6 @@
                                 <button class="btn btn-sm btn-primary" onclick="addBudgetGroup()">+ เพิ่มกิจกรรมที่ใช้งบ</button>
                             </label>
                             
-                            <!-- Container ของตารางงบ -->
                             <div id="budgetGroupsContainer"></div>
                             
                             <hr>
@@ -980,7 +980,6 @@
             let arrSpm = document.getElementById('setSpm').value.split('\n').filter(x => x.trim());
             let arrStrategy = document.getElementById('setStrategy').value.split('\n').filter(x => x.trim());
 
-            // optionData ถูกประกาศด้านบนสุด
             const optionDataObj = {
                 school: [{ group: "มาตรฐานที่ 1 คุณภาพของผู้เรียน", items: ["ตัวชี้วัดที่ 1.1(1) มีความสามารถในการอ่าน การเขียน การสื่อสาร และการคิดคำนวณ", "ตัวชี้วัดที่ 1.1(2) มีความสามารถในการคิดวิเคราะห์ คิดอย่างมีวิจารณญาณ อภิปรายแลกเปลี่ยนความคิดเห็น และแก้ปัญหา", "ตัวชี้วัดที่ 1.1(3) มีความสามารถในการสร้างนวัตกรรม", "ตัวชี้วัดที่ 1.1(4) มีความสามารถในการใช้เทคโนโลยีสารสนเทศและการสื่อสาร", "ตัวชี้วัดที่ 1.1(5) มีผลสัมฤทธิ์ทางการเรียนตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.1(6) มีความรู้ ทักษะพื้นฐาน และเจตคติที่ดีต่องานอาชีพ", "ตัวชี้วัดที่ 1.2(1) การมีคุณลักษณะและค่านิยมที่ดีตามที่สถานศึกษากำหนด", "ตัวชี้วัดที่ 1.2(2) ความภูมิใจในท้องถิ่นและความเป็นไทย", "ตัวชี้วัดที่ 1.2(3) การยอมรับที่จะอยู่ร่วมกันบนความแตกต่างและหลากหลาย", "ตัวชี้วัดที่ 1.2(4) สุขภาวะทางร่างกาย และจิตสังคม"] }, { group: "มาตรฐานที่ 2 กระบวนการบริหารและการจัดการ", items: ["ตัวชี้วัดที่ 2.1 มีเป้าหมายวิสัยทัศน์และพันธกิจที่สถานศึกษากำหนดชัดเจน", "ตัวชี้วัดที่ 2.2 มีระบบบริหารจัดการคุณภาพของสถานศึกษา", "ตัวชี้วัดที่ 2.3 ดำเนินงานพัฒนาวิชาการที่เน้นคุณภาพผู้เรียนรอบด้านตามหลักสูตรสถานศึกษา และทุกกลุ่มเป้าหมาย", "ตัวชี้วัดที่ 2.4 พัฒนาครูและบุคลากรให้มีความเชี่ยวชาญทางวิชาชีพ", "ตัวชี้วัดที่ 2.5 จัดสภาพแวดล้อมทางกายภาพและสังคมที่เอื้อต่อการจัดการเรียนรู้อย่างมีคุณภาพ", "ตัวชี้วัดที่ 2.6 จัดระบบเทคโนโลยีสารสนเทศเพื่อสนับสนุนการบริหารจัดการและการจัดการเรียนรู้"] }, { group: "มาตรฐานที่ 3 กระบวนการจัดการเรียนการสอนที่เน้นผู้เรียนเป็นสำคัญ", items: ["ตัวชี้วัดที่ 3.1 จัดการเรียนรู้ผ่านกระบวนการคิดและปฏิบัติจริง และสามารถนำไปประยุกต์ใช้ในชีวิตได้", "ตัวชี้วัดที่ 3.2 ใช้สื่อ เทคโนโลยีสารสนเทศและแหล่งเรียนรู้ที่เอื้อต่อการเรียนรู้", "ตัวชี้วัดที่ 3.3 มีการบริหารจัดการชั้นเรียนเชิงบวก", "ตัวชี้วัดที่ 3.4 ตรวจสอบและประเมินผู้เรียนอย่างเป็นระบบและนำผลมาพัฒนาผู้เรียน", "ตัวชี้วัดที่ 3.5 มีการแลกเปลี่ยนเรียนรู้และให้ข้อมูลสะท้อนกลับเพื่อพัฒนาและปรับปรุงการจัดการเรียนรู้"] }],
                 onesqa: [{ group: "มาตรฐานที่ 1 ผลลัพธ์ของการเรียนรู้", items: ["ตัวชี้วัดที่ 1.1 ผู้เรียนมีสมรรถนะตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.2 ผู้เรียนมีคุณลักษณะที่พึงประสงค์ตามหลักสูตรสถานศึกษา", "ตัวชี้วัดที่ 1.3 ผู้เรียนสามารถนำตนเองในการเรียนรู้"] }, { group: "มาตรฐานที่ 2 การพัฒนาคุณภาพการบริหารจัดการสถานศึกษา", items: ["ตัวชี้วัดที่ 2.1 วิสัยทัศน์ พันธกิจ และค่านิยมของสถานศึกษา", "ตัวชี้วัดที่ 2.2 นโยบาย ทิศทาง กลยุทธ์และแผนงานสอดคล้องกับวิสัยทัศน์และพันธกิจ", "ตัวชี้วัดที่ 2.3 ผู้บริหารสถานศึกษามีภาวะผู้นำทางวิชาการและบริหารจัดการด้วยหลักธรรมาภิบาล", "ตัวชี้วัดที่ 2.4 แผนงานและการดำเนินงานด้านการพัฒนาครูและบุคลากรทางการศึกษา", "ตัวชี้วัดที่ 2.5 กระบวนการนิเทศการปฏิบัติงานของครูและบุคลากรทางการศึกษาอย่างเป็นระบบ", "ตัวชี้วัดที่ 2.6 การใช้สื่อ อุปกรณ์ ระบบเทคโนโลยีเพื่อสนับสนุนการจัดการศึกษา", "ตัวชี้วัดที่ 2.7 การจัดสภาพแวดล้อม อาคารสถานที่ ปลอดภัยและถูกสุขลักษณะ", "ตัวชี้วัดที่ 2.8 สวัสดิการ สวัสดิภาพ แนวทางการป้องกันโรค อุบัติภัย ภัยพิบัติ", "ตัวชี้วัดที่ 2.9 ระบบและกระบวนการช่วยเหลือผู้เรียน", "ตัวชี้วัดที่ 2.10 การเสริมสร้างเครือข่ายผู้ปกครอง องค์กร และชุมชน เพื่อความร่วมมือในการสนับสนุนการจัดการเรียนรู้และพัฒนาผู้เรียน"] }, { group: "มาตรฐานที่ 3 การพัฒนาคุณภาพการจัดการเรียนรู้", items: ["ตัวชี้วัดที่ 3.1 การออกแบบหลักสูตรและแผนการจัดการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.2 การจัดกิจกรรมการเรียนรู้ที่เสริมสร้างสมรรถนะและคุณลักษณะที่พึงประสงค์", "ตัวชี้วัดที่ 3.3 ครูวัดและประเมินผลการเรียนรู้ของผู้เรียน อย่างเป็นระบบและต่อเนื่อง"] }]
@@ -1398,7 +1397,7 @@
             });
         }
 
-        // ================= ดูรายละเอียดและ Chart.js (ปรับเพิ่ม Try-Catch กันพลาด) =================
+        // ================= ดูรายละเอียด (ป้องกันบั๊กอย่างสมบูรณ์) =================
         function viewProjectDetails(id) {
             try {
                 let p = allProjects.find(x => x.id === id); 
@@ -1414,7 +1413,6 @@
                 if(!Array.isArray(mgrData)) mgrData = [mgrData];
                 document.getElementById('pdManager').innerText = mgrData.join(', ') || "-";
 
-                // ปกป้องข้อมูล General Info หากมีข้อผิดพลาดจากการโหลด
                 let gInfo = p.generalInfo || {};
                 
                 let timeData = gInfo.time || p.time || [];
@@ -1497,7 +1495,7 @@
                 });
                 document.getElementById('pdBudgetContainer').innerHTML = budgetHtml || "ไม่มีข้อมูล";
 
-                // ป้องกันระบบพังถ้าอินเทอร์เน็ตโรงเรียนโหลด Chart.js ไม่ขึ้น
+                // ปกป้องกราฟ Chart.js
                 if (typeof Chart !== 'undefined') {
                     if(chartInstance) { chartInstance.destroy(); }
                     let ctx = document.getElementById('budgetChart').getContext('2d');
@@ -1519,9 +1517,12 @@
                     });
                 }
 
-                // เรียก Modal แบบปลอดภัย
+                // การเรียก Bootstrap Modal แบบอัปเดต 100%
                 let modalEl = document.getElementById('projectDetailsModal');
-                let modalObj = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                let modalObj = bootstrap.Modal.getInstance(modalEl);
+                if (!modalObj) {
+                    modalObj = new bootstrap.Modal(modalEl);
+                }
                 modalObj.show();
 
             } catch(e) {
@@ -1746,7 +1747,10 @@
                 document.getElementById('mdlExpItem').value = ""; document.getElementById('mdlExpAmount').value = "";
                 
                 let modalEl = document.getElementById('expenseModal');
-                let modalObj = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                let modalObj = bootstrap.Modal.getInstance(modalEl);
+                if (!modalObj) {
+                    modalObj = new bootstrap.Modal(modalEl);
+                }
                 modalObj.show();
 
             } catch (e) {
